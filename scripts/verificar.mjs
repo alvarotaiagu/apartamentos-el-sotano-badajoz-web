@@ -419,6 +419,28 @@ try {
     await ctx.close();
   }
 
+  /* ═══════════════ [ELEGIR HERO] la versión de los tres marcos (?hero=marcos) ═══════════════ */
+  for (const [w, h] of [[390, 844], [1440, 900]]) {
+    const { ctx, page } = await nuevaPagina(w < 1000 ? movilOpc(w, h) : { viewport: { width: w, height: h } });
+    await page.goto(BASE + '?hero=marcos', { waitUntil: 'load' });
+    await page.waitForTimeout(4600);
+    const r = await page.evaluate(() => {
+      const S = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sobresale')) || 12;
+      const caja = (e, s = 0) => { const b = e.getBoundingClientRect(); return { l: b.left - s, t: b.top - s, r: b.right + s, b: b.bottom + s }; };
+      const marcos = [...document.querySelectorAll('#hero-marcos .detalle')].map(d => ({ marco: caja(d.querySelector('.marco'), S), pie: caja(d.querySelector('figcaption')) }));
+      const choca = (a, b) => a.l < b.r - 1 && b.l < a.r - 1 && a.t < b.b - 1 && b.t < a.b - 1;
+      const choques = [];
+      marcos.forEach((a, i) => marcos.forEach((b, j) => { if (j !== i && (choca(a.marco, b.marco) || choca(a.marco, b.pie))) choques.push(i + '×' + j); }));
+      const texto = ['#hero-titulo', '.hero__acciones', '.hero__notas'].map(s => caja(document.querySelector(s)));
+      marcos.forEach((a, i) => texto.forEach((t, k) => { if (choca(a.marco, t)) choques.push('marco ' + i + '×texto ' + k); }));
+      return { n: marcos.length, choques, foto: getComputedStyle(document.querySelector('.hero__foto')).display, vistas: [...document.querySelectorAll('#hero-marcos img')].filter(i => i.complete && i.naturalWidth > 0).length, ancho: document.documentElement.scrollWidth, vw: innerWidth };
+    });
+    comprobar(r.n === 3 && r.foto === 'none' && r.vistas === 3 && r.choques.length === 0 && r.ancho <= r.vw && page.errores.length === 0,
+      'hero «tres marcos» ' + w + ': tres detalles con sus fotos, sin pisarse entre ellos (listones incluidos) ni con el texto, sin errores' + (r.choques.length ? ' (' + r.choques.join(', ') + ')' : '') + (page.errores[0] ? ': ' + page.errores[0] : ''));
+    if (conCapturas) await page.screenshot({ path: foto('hero-v4-marcos-' + w + '.png') });
+    await ctx.close();
+  }
+
   /* ═══════════════ los listones: scaleX muestreado a lo largo del montaje ═══════════════ */
   {
     const { ctx, page } = await nuevaPagina();

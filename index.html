@@ -34,7 +34,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="preload" href="assets/fuentes/league-gothic-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fuentes/epilogue-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/estilos.css?v=9cbdd51e">
+<link rel="stylesheet" href="css/estilos.css?v=106b21c8">
 <link rel="stylesheet" href="css/historia.css?v=ed0085b4" data-modulo="historia">
 <script>
 /* Bloqueante a propósito: la clase de JS (y la densidad de la maqueta) se
@@ -45,6 +45,8 @@
   h.classList.add('con-js');
   /* red de seguridad: si main.js no llega, la cortina se va igual */
   setTimeout(function () { h.classList.add('cortina-fuera'); }, 7000);
+  /* [ELEGIR HERO] ?hero=marcos enseña la versión de los tres marcos */
+  if (/[?&]hero=marcos\b/.test(location.search)) h.classList.add('hero-marcos');
   /* [MANDO DE MAQUETA] la densidad guardada y los avisos [VERIFICAR] solo cuentan en modo revisión (?revision) */
   if (!/[?&]revision\b/.test(location.search)) return;
   h.classList.add('con-revision');
@@ -180,31 +182,54 @@
         <span class="listones" aria-hidden="true"><i class="t"></i><i class="r"></i><i class="b"></i><i class="l"></i></span>
         <div class="marco__ventana">
           <div class="hero__fotos" id="hero-fotos">
-            <picture class="hero__img es-activa" data-foto="670608148" data-carga="eager" data-sizes="(max-width: 900px) calc(100vw - 32px), 46vw" data-pie="El patio: suelo de barro y enrejado de madera">
+            <picture class="hero__img es-activa" data-foto="670608148" data-carga="eager" data-sizes="(max-width: 900px) calc(100vw - 32px), 46vw" data-pie="El patio y su ave del paraíso" style="--foco: 55% 50%">
               <source type="image/avif" srcset="assets/fotos/670608148-480.avif 480w, assets/fotos/670608148-960.avif 960w, assets/fotos/670608148-1440.avif 1440w, assets/fotos/670608148-2000.avif 2000w" sizes="(max-width: 900px) calc(100vw - 32px), 46vw">
               <source type="image/webp" srcset="assets/fotos/670608148-480.webp 480w, assets/fotos/670608148-960.webp 960w, assets/fotos/670608148-1440.webp 1440w, assets/fotos/670608148-2000.webp 2000w" sizes="(max-width: 900px) calc(100vw - 32px), 46vw">
               <img src="assets/fotos/670608148-2000.jpg" srcset="assets/fotos/670608148-480.jpg 480w, assets/fotos/670608148-960.jpg 960w, assets/fotos/670608148-1440.jpg 1440w, assets/fotos/670608148-2000.jpg 2000w" sizes="(max-width: 900px) calc(100vw - 32px), 46vw" width="2000" height="1335" alt="El patio con el desayuno puesto, enrejado de madera y un ave del paraíso" decoding="async" fetchpriority="high">
             </picture>
-            <picture class="hero__img" data-foto="670608339" data-sizes="(max-width: 900px) calc(100vw - 32px), 46vw" data-pie="La puerta de la vidriera, en el Nº 2">
+            <picture class="hero__img" data-foto="670608339" data-sizes="(max-width: 900px) calc(100vw - 32px), 46vw" data-pie="La puerta de la vidriera, en el Nº 2" style="--foco: 70% 50%">
               <source type="image/avif" srcset="assets/fotos/670608339-480.avif 480w, assets/fotos/670608339-960.avif 960w, assets/fotos/670608339-1440.avif 1440w, assets/fotos/670608339-2000.avif 2000w" sizes="(max-width: 900px) calc(100vw - 32px), 46vw">
               <source type="image/webp" srcset="assets/fotos/670608339-480.webp 480w, assets/fotos/670608339-960.webp 960w, assets/fotos/670608339-1440.webp 1440w, assets/fotos/670608339-2000.webp 2000w" sizes="(max-width: 900px) calc(100vw - 32px), 46vw">
               <img src="assets/fotos/670608339-2000.jpg" srcset="assets/fotos/670608339-480.jpg 480w, assets/fotos/670608339-960.jpg 960w, assets/fotos/670608339-1440.jpg 1440w, assets/fotos/670608339-2000.jpg 2000w" sizes="(max-width: 900px) calc(100vw - 32px), 46vw" width="2000" height="1335" alt="Puerta antigua de madera con vidriera verde y ámbar" decoding="async" loading="lazy">
             </picture>
-            <picture class="hero__img" data-foto="657883542" data-sizes="(max-width: 900px) calc(100vw - 32px), 46vw" data-pie="La planta abierta del Nº 3, con su celosía">
-              <source type="image/avif" srcset="assets/fotos/657883542-480.avif 480w, assets/fotos/657883542-960.avif 960w, assets/fotos/657883542-1440.avif 1440w, assets/fotos/657883542-2000.avif 2000w" sizes="(max-width: 900px) calc(100vw - 32px), 46vw">
-              <source type="image/webp" srcset="assets/fotos/657883542-480.webp 480w, assets/fotos/657883542-960.webp 960w, assets/fotos/657883542-1440.webp 1440w, assets/fotos/657883542-2000.webp 2000w" sizes="(max-width: 900px) calc(100vw - 32px), 46vw">
-              <img src="assets/fotos/657883542-2000.jpg" srcset="assets/fotos/657883542-480.jpg 480w, assets/fotos/657883542-960.jpg 960w, assets/fotos/657883542-1440.jpg 1440w, assets/fotos/657883542-2000.jpg 2000w" sizes="(max-width: 900px) calc(100vw - 32px), 46vw" width="2000" height="1500" alt="Planta abierta del Nº 3 con la celosía de listones de madera" decoding="async" loading="lazy">
-            </picture>
-            <picture class="hero__img" data-foto="670608186" data-sizes="(max-width: 900px) calc(100vw - 32px), 46vw" data-pie="El salón del Nº 2 y la barra del antiguo restaurante" data-verificar="barra">
-              <source type="image/avif" srcset="assets/fotos/670608186-480.avif 480w, assets/fotos/670608186-960.avif 960w, assets/fotos/670608186-1440.avif 1440w, assets/fotos/670608186-2000.avif 2000w" sizes="(max-width: 900px) calc(100vw - 32px), 46vw">
-              <source type="image/webp" srcset="assets/fotos/670608186-480.webp 480w, assets/fotos/670608186-960.webp 960w, assets/fotos/670608186-1440.webp 1440w, assets/fotos/670608186-2000.webp 2000w" sizes="(max-width: 900px) calc(100vw - 32px), 46vw">
-              <img src="assets/fotos/670608186-2000.jpg" srcset="assets/fotos/670608186-480.jpg 480w, assets/fotos/670608186-960.jpg 960w, assets/fotos/670608186-1440.jpg 1440w, assets/fotos/670608186-2000.jpg 2000w" sizes="(max-width: 900px) calc(100vw - 32px), 46vw" width="2000" height="1336" alt="Salón del Nº 2: el mueble largo de madera con cajones, sofá azul y mesa redonda" decoding="async" loading="lazy">
+            <picture class="hero__img" data-foto="670608170" data-sizes="(max-width: 900px) calc(100vw - 32px), 46vw" data-pie="El patio: suelo de barro y enrejado de madera" style="--foco: 45% 50%">
+              <source type="image/avif" srcset="assets/fotos/670608170-480.avif 480w, assets/fotos/670608170-960.avif 960w, assets/fotos/670608170-1440.avif 1440w, assets/fotos/670608170-2000.avif 2000w" sizes="(max-width: 900px) calc(100vw - 32px), 46vw">
+              <source type="image/webp" srcset="assets/fotos/670608170-480.webp 480w, assets/fotos/670608170-960.webp 960w, assets/fotos/670608170-1440.webp 1440w, assets/fotos/670608170-2000.webp 2000w" sizes="(max-width: 900px) calc(100vw - 32px), 46vw">
+              <img src="assets/fotos/670608170-2000.jpg" srcset="assets/fotos/670608170-480.jpg 480w, assets/fotos/670608170-960.jpg 960w, assets/fotos/670608170-1440.jpg 1440w, assets/fotos/670608170-2000.jpg 2000w" sizes="(max-width: 900px) calc(100vw - 32px), 46vw" width="2000" height="1335" alt="El patio: suelo de barro, enrejado de madera, plantas y mesa" decoding="async" loading="lazy">
             </picture>
           </div>
         </div>
       </div>
-      <figcaption class="hero__pie"><span class="hero__pie-texto" id="hero-pie">El patio: suelo de barro y enrejado de madera</span><span class="verificar" id="hero-pie-verificar" hidden>[VERIFICAR]</span><span class="hero__cuenta" id="hero-cuenta" aria-hidden="true">01 / 04</span></figcaption>
+      <figcaption class="hero__pie"><span class="hero__pie-texto" id="hero-pie">El patio y su ave del paraíso</span><span class="verificar" id="hero-pie-verificar" hidden>[VERIFICAR]</span><span class="hero__cuenta" id="hero-cuenta" aria-hidden="true">01 / 03</span></figcaption>
     </figure>
+    <!-- ═══ [ELEGIR HERO] versión «tres marcos»: solo con ?hero=marcos. Al elegir, se borra la que no ═══ -->
+    <div class="hero__marcos" id="hero-marcos">
+      <figure class="detalle detalle--a">
+        <div class="marco"><span class="listones" aria-hidden="true"><i class="t"></i><i class="r"></i><i class="b"></i><i class="l"></i></span><div class="marco__ventana"><picture data-foto="670608339" data-sizes="(max-width: 900px) 46vw, 22vw" style="--foco: 72% 46%">
+  <source type="image/avif" srcset="assets/fotos/670608339-480.avif 480w, assets/fotos/670608339-960.avif 960w, assets/fotos/670608339-1440.avif 1440w, assets/fotos/670608339-2000.avif 2000w" sizes="(max-width: 900px) 46vw, 22vw">
+  <source type="image/webp" srcset="assets/fotos/670608339-480.webp 480w, assets/fotos/670608339-960.webp 960w, assets/fotos/670608339-1440.webp 1440w, assets/fotos/670608339-2000.webp 2000w" sizes="(max-width: 900px) 46vw, 22vw">
+  <img src="assets/fotos/670608339-2000.jpg" srcset="assets/fotos/670608339-480.jpg 480w, assets/fotos/670608339-960.jpg 960w, assets/fotos/670608339-1440.jpg 1440w, assets/fotos/670608339-2000.jpg 2000w" sizes="(max-width: 900px) 46vw, 22vw" width="2000" height="1335" alt="Puerta antigua de madera con vidriera verde y ámbar" decoding="async" loading="lazy">
+</picture></div></div>
+        <figcaption>La puerta de la vidriera</figcaption>
+      </figure>
+      <figure class="detalle detalle--b">
+        <div class="marco"><span class="listones" aria-hidden="true"><i class="t"></i><i class="r"></i><i class="b"></i><i class="l"></i></span><div class="marco__ventana"><picture data-foto="670608148" data-sizes="(max-width: 900px) 46vw, 22vw" style="--foco: 55% 50%">
+  <source type="image/avif" srcset="assets/fotos/670608148-480.avif 480w, assets/fotos/670608148-960.avif 960w, assets/fotos/670608148-1440.avif 1440w, assets/fotos/670608148-2000.avif 2000w" sizes="(max-width: 900px) 46vw, 22vw">
+  <source type="image/webp" srcset="assets/fotos/670608148-480.webp 480w, assets/fotos/670608148-960.webp 960w, assets/fotos/670608148-1440.webp 1440w, assets/fotos/670608148-2000.webp 2000w" sizes="(max-width: 900px) 46vw, 22vw">
+  <img src="assets/fotos/670608148-2000.jpg" srcset="assets/fotos/670608148-480.jpg 480w, assets/fotos/670608148-960.jpg 960w, assets/fotos/670608148-1440.jpg 1440w, assets/fotos/670608148-2000.jpg 2000w" sizes="(max-width: 900px) 46vw, 22vw" width="2000" height="1335" alt="El patio con el desayuno puesto, enrejado de madera y un ave del paraíso" decoding="async" loading="lazy">
+</picture></div></div>
+        <figcaption>El patio</figcaption>
+      </figure>
+      <figure class="detalle detalle--c">
+        <div class="marco"><span class="listones" aria-hidden="true"><i class="t"></i><i class="r"></i><i class="b"></i><i class="l"></i></span><div class="marco__ventana"><picture data-foto="650532099" data-sizes="(max-width: 900px) 46vw, 26vw" style="--foco: 26% 55%">
+  <source type="image/avif" srcset="assets/fotos/650532099-480.avif 480w, assets/fotos/650532099-960.avif 960w, assets/fotos/650532099-1440.avif 1440w" sizes="(max-width: 900px) 46vw, 26vw">
+  <source type="image/webp" srcset="assets/fotos/650532099-480.webp 480w, assets/fotos/650532099-960.webp 960w, assets/fotos/650532099-1440.webp 1440w" sizes="(max-width: 900px) 46vw, 26vw">
+  <img src="assets/fotos/650532099-1440.jpg" srcset="assets/fotos/650532099-480.jpg 480w, assets/fotos/650532099-960.jpg 960w, assets/fotos/650532099-1440.jpg 1440w" sizes="(max-width: 900px) 46vw, 26vw" width="1440" height="1080" alt="Pasillo con la palabra LOVE en madera sobre un papel pintado de hojas oscuras" decoding="async" loading="lazy">
+</picture></div></div>
+        <figcaption>El pasillo, con su «LOVE»</figcaption>
+      </figure>
+    </div>
+    <!-- ═══ fin [ELEGIR HERO] ═══ -->
   </section>
 
   <!-- ═══════════════ 2 · LA CASA ═══════════════ -->
@@ -665,7 +690,7 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-<script src="js/main.js?v=7d133740"></script>
+<script src="js/main.js?v=b7b7cded"></script>
 <script src="js/historia.js?v=d8e4ed46" data-modulo="historia"></script>
 </body>
 </html>

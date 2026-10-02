@@ -446,6 +446,26 @@
     });
   })();
 
+  /* [ELEGIR HERO] la versión de los tres marcos: sus listones se montan uno detrás de otro al
+     abrirse la cortina y cada marco tiene su paralaje (profundidades distintas) */
+  (function heroMarcos() {
+    var caja = $('#hero-marcos');
+    if (!caja || !html.classList.contains('hero-marcos')) return;
+    var detalles = todos('.detalle', caja);
+    var marcosD = detalles.map(function (d) { return d.querySelector('.marco'); });
+    if (!movimiento) return;
+    marcosD.forEach(prepararListones);
+    var fotos = detalles.map(function (d) { return d.querySelector('.marco__ventana'); });
+    gsap.set(fotos, { opacity: 0, scale: 1.08 });
+    alAbrirse(function () {
+      marcosD.forEach(function (m, i) { montarListones(m, 0.3 + i * 0.32); });
+      gsap.to(fotos, { opacity: 1, scale: 1, duration: 1.6, ease: 'expo.out', stagger: 0.32, delay: 0.55, clearProps: 'transform' });
+    });
+    [-46, 34, -18].forEach(function (y, i) {
+      gsap.fromTo(detalles[i], { y: 0 }, { y: y, ease: 'none', immediateRender: false, scrollTrigger: { trigger: '#inicio', start: 'top top', end: 'bottom top', scrub: true } });
+    });
+  })();
+
   /* la sombra viva: la capa #sombra se desplaza al contrario que el puntero, como si la luz
      fuera tuya (hasta ±9 unidades del viewBox). Solo con pointer:fine y movimiento. */
   (function sombraViva() {
