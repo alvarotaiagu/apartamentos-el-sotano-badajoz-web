@@ -1,0 +1,7 @@
+node_modules/
+scripts/__pycache__/
+scripts/fuentes/graduadas/
+*.log
+screenshots/
+.DS_Store
+Thumbs.db

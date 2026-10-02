@@ -1,0 +1,233 @@
+{
+ "origen": {
+  "nombre": "C/ Virgen de la Soledad, 6",
+  "lat": 38.879481,
+  "lon": -6.9701205,
+  "fuente": "OpenStreetMap: 6, Calle Virgen de la Soledad, Casco Antiguo, Badajoz, Extremadura, 06002, España"
+ },
+ "ritmo_m_por_minuto": 75,
+ "nota": "La posición en el radar usa el rumbo y la distancia en línea recta; la etiqueta, la distancia a pie. lado: l | r | c; dy en unidades del radar (600 × 600).",
+ "medido": "2026-10-02",
+ "sitios": [
+  {
+   "clave": "plaza_espana",
+   "nombre": "Plaza de España y Ayuntamiento",
+   "corto": "Pl. de España",
+   "lat": 38.8786378,
+   "lon": -6.9700763,
+   "recta_m": 94,
+   "rumbo": 178,
+   "a_pie_m": 109,
+   "minutos": 2,
+   "medida": "a pie",
+   "lado": "r",
+   "dy": -8,
+   "movil": {
+    "lado": "c",
+    "dy": 38
+   },
+   "fuente": "OpenStreetMap: Nominatim («Plaza de España, Casco Antiguo, Badajoz, Extremadura, 06001, España») y routing.openstreetmap.de, perfil a pie",
+   "fecha": "2026-10-02"
+  },
+  {
+   "clave": "plaza_soledad",
+   "nombre": "Plaza de la Soledad",
+   "corto": "Pl. de la Soledad",
+   "lat": 38.8803408,
+   "lon": -6.9711296,
+   "recta_m": 130,
+   "rumbo": 318,
+   "a_pie_m": 194,
+   "minutos": 3,
+   "medida": "a pie",
+   "lado": "l",
+   "dy": 8,
+   "movil": {
+    "lado": "l",
+    "dy": 12
+   },
+   "fuente": "OpenStreetMap: Nominatim («Plaza de la Soledad, Casco Antiguo, Badajoz, Extremadura, España») y routing.openstreetmap.de, perfil a pie",
+   "fecha": "2026-10-02"
+  },
+  {
+   "clave": "catedral",
+   "nombre": "Catedral de San Juan Bautista",
+   "corto": "Catedral",
+   "lat": 38.8783635,
+   "lon": -6.9696823,
+   "recta_m": 130,
+   "rumbo": 163,
+   "a_pie_m": 235,
+   "minutos": 4,
+   "medida": "a pie",
+   "lado": "r",
+   "dy": 0,
+   "movil": {
+    "lado": "r",
+    "dy": -8
+   },
+   "fuente": "OpenStreetMap: Nominatim («Catedral de San Juan Bautista, Plaza de España, Casco Antiguo, Badajoz, Extremadura, 06001») y routing.openstreetmap.de, perfil a pie",
+   "fecha": "2026-10-02"
+  },
+  {
+   "clave": "plaza_alta",
+   "nombre": "Plaza Alta",
+   "corto": "Plaza Alta",
+   "lat": 38.8812287,
+   "lon": -6.9682714,
+   "recta_m": 252,
+   "rumbo": 39,
+   "a_pie_m": 303,
+   "minutos": 5,
+   "medida": "a pie",
+   "lado": "r",
+   "dy": 8,
+   "movil": {
+    "lado": "r",
+    "dy": 12
+   },
+   "fuente": "OpenStreetMap: Nominatim («Plaza Alta, Casco Antiguo, Badajoz, Extremadura, 06001, España») y routing.openstreetmap.de, perfil a pie",
+   "fecha": "2026-10-02"
+  },
+  {
+   "clave": "espantaperros",
+   "nombre": "Torre de Espantaperros",
+   "corto": "Espantaperros",
+   "lat": 38.8814,
+   "lon": -6.9677,
+   "recta_m": 299,
+   "rumbo": 44,
+   "a_pie_m": 509,
+   "minutos": 7,
+   "medida": "a pie",
+   "lado": "r",
+   "dy": -4,
+   "movil": {
+    "lado": "r",
+    "dy": -8
+   },
+   "fuente": "OpenStreetMap: Nominatim («Torre Espantaperros, Calle Castillo (2º resultado de Nominatim)») y routing.openstreetmap.de, perfil a pie",
+   "fecha": "2026-10-02"
+  },
+  {
+   "clave": "museo_arq",
+   "nombre": "Museo Arqueológico",
+   "corto": "Museo Arqueológico",
+   "lat": 38.8822449,
+   "lon": -6.9681912,
+   "recta_m": 350,
+   "rumbo": 29,
+   "a_pie_m": 487,
+   "minutos": 7,
+   "medida": "a pie",
+   "lado": "r",
+   "dy": 0,
+   "movil": {
+    "lado": "r",
+    "dy": 0
+   },
+   "fuente": "OpenStreetMap: Nominatim («Museo Arqueológico Provincial, Plaza Alta, Casco Antiguo, Badajoz, Extremadura, 06001, Esp») y routing.openstreetmap.de, perfil a pie",
+   "fecha": "2026-10-02"
+  },
+  {
+   "clave": "lopez_ayala",
+   "nombre": "Teatro López de Ayala",
+   "corto": "López de Ayala",
+   "lat": 38.8761365,
+   "lon": -6.9725742,
+   "recta_m": 428,
+   "rumbo": 210,
+   "a_pie_m": 494,
+   "minutos": 7,
+   "medida": "a pie",
+   "lado": "l",
+   "dy": 0,
+   "movil": {
+    "lado": "l",
+    "dy": 0
+   },
+   "fuente": "OpenStreetMap: Nominatim («Teatro López de Ayala, Paseo San Francisco, Santo Domingo, Badajoz, Extremadura, 06001, Es») y routing.openstreetmap.de, perfil a pie",
+   "fecha": "2026-10-02"
+  },
+  {
+   "clave": "alcazaba",
+   "nombre": "Alcazaba",
+   "corto": "Alcazaba",
+   "lat": 38.883167,
+   "lon": -6.9685755,
+   "recta_m": 431,
+   "rumbo": 18,
+   "a_pie_m": 514,
+   "minutos": 7,
+   "medida": "a pie",
+   "lado": "r",
+   "dy": 0,
+   "movil": {
+    "lado": "r",
+    "dy": 0
+   },
+   "fuente": "OpenStreetMap: Nominatim («Alcazaba de Badajoz, Plaza San José, Casco Antiguo, Badajoz, Extremadura, 06001, España») y routing.openstreetmap.de, perfil a pie",
+   "fecha": "2026-10-02"
+  },
+  {
+   "clave": "puerta_palmas",
+   "nombre": "Puerta de Palmas",
+   "corto": "Puerta de Palmas",
+   "lat": 38.8805362,
+   "lon": -6.9755626,
+   "recta_m": 485,
+   "rumbo": 284,
+   "a_pie_m": 561,
+   "minutos": 8,
+   "medida": "a pie",
+   "lado": "l",
+   "dy": -4,
+   "movil": {
+    "lado": "c",
+    "dy": -20
+   },
+   "fuente": "OpenStreetMap: Nominatim («Puerta de Palmas, Plaza de los Reyes Católicos, Santo Domingo, Badajoz, Extremadura, 06001») y routing.openstreetmap.de, perfil a pie",
+   "fecha": "2026-10-02"
+  },
+  {
+   "clave": "parque_legion",
+   "nombre": "Parque de la Legión",
+   "corto": "Parque de la Legión",
+   "lat": 38.8795507,
+   "lon": -6.9644815,
+   "recta_m": 488,
+   "rumbo": 89,
+   "a_pie_m": 888,
+   "minutos": 12,
+   "medida": "a pie",
+   "lado": "c",
+   "dy": -20,
+   "movil": {
+    "lado": "c",
+    "dy": -20
+   },
+   "fuente": "OpenStreetMap: Nominatim («Parque de La Legión, San Roque, Badajoz, Extremadura, España») y routing.openstreetmap.de, perfil a pie",
+   "fecha": "2026-10-02"
+  },
+  {
+   "clave": "puente_palmas",
+   "nombre": "Puente de Palmas",
+   "corto": "Puente de Palmas",
+   "lat": 38.8828108,
+   "lon": -6.977578,
+   "recta_m": 744,
+   "rumbo": 300,
+   "a_pie_m": 860,
+   "minutos": 12,
+   "medida": "a pie",
+   "lado": "r",
+   "dy": 0,
+   "movil": {
+    "lado": "r",
+    "dy": 0
+   },
+   "fuente": "OpenStreetMap: Nominatim («Puente de Palmas, Santo Domingo, Badajoz, Extremadura, 06001, España») y routing.openstreetmap.de, perfil a pie",
+   "fecha": "2026-10-02"
+  }
+ ]
+}

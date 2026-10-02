@@ -1,0 +1,84 @@
+{
+ "provisional": true,
+ "aviso": "Apartamentos provisionales: números y nombres pendientes de Manuel (Booking enseña 4; la bio de Instagram dice «cinco»)",
+ "fuente": "Ficha de Booking «apartamentos-el-sotano», leída el 2026-10-02. Los «Nº» son nuestros, no suyos.",
+ "comunes": [
+  "Cocina completa: placa, horno, microondas, nevera, cafetera y tostadora",
+  "Lavadora",
+  "Aire acondicionado y calefacción",
+  "Wifi",
+  "TV con streaming",
+  "Ropa de cama y toallas",
+  "Artículos de aseo y secador",
+  "Plancha",
+  "Insonorización",
+  "Juegos de mesa"
+ ],
+ "apartamentos": [
+  {
+   "numero": 1,
+   "id_booking": "1365484701",
+   "nombre_booking": "Apartamento de 1 dormitorio",
+   "m2": 70,
+   "dormitorios": 1,
+   "camas": ["Dormitorio: 2 camas individuales", "Salón: 1 sofá cama"],
+   "camas_resumen": "2 camas individuales y sofá cama",
+   "extras": ["Comedor con panelado de madera", "Suelo de madera"],
+   "terraza": false,
+   "balcon": false,
+   "lavadora": true,
+   "fotos": ["650532149", "650532136", "650532143", "650532145", "650532154", "650532157", "650532150", "650532160"],
+   "provisional": true
+  },
+  {
+   "numero": 2,
+   "id_booking": "1365484704",
+   "nombre_booking": "Apartamento de 1 dormitorio con terraza",
+   "m2": 80,
+   "dormitorios": 1,
+   "camas": ["Dormitorio: 1 cama individual y 1 cama doble", "Salón: 1 sofá cama"],
+   "camas_resumen": "Cama doble, cama individual y sofá cama",
+   "extras": [
+    { "texto": "Terraza-patio", "verificar": "¿El patio de las fotos es solo del Nº 2 o es de toda la casa?" },
+    { "texto": "La barra del antiguo restaurante", "verificar": "Confirmar con Manuel que el mueble largo del salón es la barra del restaurante" },
+    "La puerta de la vidriera",
+    "Suelo de barro"
+   ],
+   "terraza": true,
+   "balcon": false,
+   "lavadora": true,
+   "fotos": ["670608186", "670608668", "670608660", "670608208", "670608312", "670608339", "670607988", "670608229", "670608256", "670608284", "670608074", "670608106", "670608170"],
+   "provisional": true
+  },
+  {
+   "numero": 3,
+   "id_booking": "1365484703",
+   "nombre_booking": "Habitación Doble Deluxe con balcón",
+   "m2": 90,
+   "dormitorios": 0,
+   "camas": ["Planta abierta: 1 cama"],
+   "camas_resumen": "1 cama, en planta abierta",
+   "extras": ["Planta abierta", "Celosía de listones", "Balcón", "Entrada propia"],
+   "terraza": false,
+   "balcon": true,
+   "lavadora": true,
+   "fotos": ["657883542", "657883547", "657883551", "657883538", "657883584", "657883559", "657883554", "657883564", "657883574"],
+   "provisional": true
+  },
+  {
+   "numero": 4,
+   "id_booking": "1365484702",
+   "nombre_booking": "Apartamento",
+   "m2": 95,
+   "dormitorios": 2,
+   "camas": ["Dormitorio 1: 2 camas individuales y 1 cama doble", "Dormitorio 2: 3 camas individuales"],
+   "camas_resumen": "Dos dormitorios: cama doble y 5 individuales",
+   "extras": ["Balcón y terraza", "Mesa ovalada con lámpara de araña", "Dos dormitorios"],
+   "terraza": true,
+   "balcon": true,
+   "lavadora": true,
+   "fotos": ["651585137", "651585140", "651585159", "651585167", "651584991", "651585181", "651585144", "651585149"],
+   "provisional": true
+  }
+ ]
+}

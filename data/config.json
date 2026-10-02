@@ -1,0 +1,30 @@
+{
+ "telefono": "657 77 11 35",
+ "telefono_enlace": "+34657771135",
+ "email": "apartamentoselsotano@gmail.com",
+ "whatsapp": null,
+ "booking": "https://www.booking.com/hotel/es/apartamentos-el-sotano.es.html",
+ "instagram": "https://www.instagram.com/apartamentoselsotano/",
+ "google": "https://www.google.com/maps/search/?api=1&query=Apartamentos+El+S%C3%B3tano+Badajoz",
+ "licencia": "AT-BA-00367",
+ "direccion": {
+  "calle": "C/ Virgen de la Soledad, 6",
+  "cp": "06002",
+  "ciudad": "Badajoz",
+  "lat": 38.879481,
+  "lon": -6.9701205
+ },
+ "segundo_portal": null,
+ "segundo_portal_ejemplo": {
+  "calle": "C/ Montesinos, 3",
+  "nota": "Rellenar «segundo_portal» con este formato cuando Manuel confirme qué apartamentos hay en cada portal; entonces el contacto enseña las dos puertas."
+ },
+ "foto_antigua": null,
+ "foto_antigua_ejemplo": {
+  "src": "assets/historia/restaurante-antiguo.jpg",
+  "ancho": 1200,
+  "alto": 800,
+  "alt": "El restaurante El Sótano, en una foto antigua de la familia",
+  "pie": "El Sótano cuando era restaurante"
+ }
+}

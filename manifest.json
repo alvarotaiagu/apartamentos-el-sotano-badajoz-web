@@ -1,0 +1,10 @@
+{
+  "name": "El Sótano · Apartamentos",
+  "short_name": "El Sótano",
+  "lang": "es",
+  "start_url": "./",
+  "display": "browser",
+  "background_color": "#F7F4EF",
+  "theme_color": "#8C5B4D",
+  "icons": [{ "src": "assets/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

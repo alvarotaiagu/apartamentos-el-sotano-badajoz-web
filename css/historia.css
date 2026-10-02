@@ -1,0 +1,51 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   [MÓDULO HISTORIA] «Fue restaurante. Hoy es casa.»
+   La única sección oscura de la web: noche #2A1712 con un brillo cálido
+   arriba a la izquierda. Entra y sale con un fundido de fondo (de la cal a la
+   noche, y de la noche al almagre del radar), sin corte.
+   Se quita con node scripts/quitar-historia.mjs: este archivo, js/historia.js
+   y la <section id="historia"> se van sin tocar nada más.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.historia {
+  --noche: #2A1712;
+  --fundido: clamp(140px, 18vh, 220px);
+  position: relative; z-index: 1;
+  color: #F3E9D8;
+  background-color: var(--noche);            /* debajo del degradado: el fondo real del texto */
+  background-image: linear-gradient(180deg,
+    var(--cal) 0, var(--noche) var(--fundido),
+    var(--noche) calc(100% - var(--fundido)), var(--almagre) 100%);
+  padding: calc(var(--fundido) + clamp(2rem, 5vw, 4rem)) max(var(--margen), calc((100% - var(--ancho)) / 2)) calc(var(--fundido) + clamp(1rem, 3vw, 2rem));
+  overflow: clip;
+}
+.historia__brillo {
+  position: absolute; left: -12vw; top: calc(var(--fundido) * .6);
+  width: min(90vw, 1100px); aspect-ratio: 1; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(214, 150, 86, .26), rgba(214, 150, 86, .08) 55%, rgba(214, 150, 86, 0));
+  will-change: transform;
+}
+.historia__dentro { position: relative; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(2.6rem, 6vw, 6rem); align-items: center; }
+.antetitulo--noche { color: #C9A574; }
+.historia__titulo { font: 400 clamp(3.2rem, 6.4vw, 6rem)/1.02 var(--tipo-rotulo); text-transform: uppercase; letter-spacing: .012em; color: #F7EEE2; }
+.historia__linea { display: block; color: #C9A574; }
+.historia__texto p { max-width: 44ch; margin-top: 1.1rem; color: #E9DCCB; }
+.historia__fotos { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(1.6rem, 3vw, 2.8rem); align-items: end; }
+.historia__antigua { grid-column: 1 / -1; }
+.historia__antigua[hidden] { display: none; }
+.historia .marco { --marco-pad: 12px; }
+.historia .marco__ventana { aspect-ratio: 4 / 5; background: #3A231B; }
+.historia__foto--puerta { margin-bottom: clamp(2rem, 6vw, 5rem); }
+.historia figcaption { margin-top: .9rem; font-size: .86rem; line-height: 1.45; color: #D9C7B1; }
+.historia :focus-visible { outline-color: #F3E9D8; }
+/* [MANDO DE MAQUETA] versión sobria: la quita scripts/quitar-mando.mjs */
+.densidad-sobria .historia .marco { --marco-pad: 0px; }
+/* fin del bloque [MANDO DE MAQUETA] */
+
+@media (max-width: 900px) {
+  .historia__dentro { grid-template-columns: minmax(0, 1fr); }
+  .historia__fotos { grid-template-columns: minmax(0, 1fr) minmax(0, .8fr); }
+}
+@media (max-width: 520px) {
+  .historia__fotos { grid-template-columns: minmax(0, 1fr); }
+  .historia__foto--puerta { margin-bottom: 0; max-width: 78%; justify-self: end; }
+}
