@@ -138,14 +138,20 @@ try {
   {
     const { ctx, page } = await nuevaPagina();
     await ctx.addInitScript(() => {
-      window.__m = { cubre: null };
+      window.__m = { cubre: null, tarde: false };
       document.addEventListener('DOMContentLoaded', () => {
         const c = document.getElementById('cortina');
         window.__m.cubre = c ? getComputedStyle(c).display : 'sin cortina';
+        /* la red de seguridad de 7 s del <head> ya saltó: el CDN tardó (la prueba se repite) */
+        window.__m.tarde = document.documentElement.classList.contains('cortina-fuera');
       });
     });
-    await page.goto(BASE, { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(4600);
+    for (let intento = 0; intento < 3; intento++) {
+      await page.goto(BASE, { waitUntil: 'domcontentloaded' });
+      await page.waitForTimeout(4600);
+      if (!(await page.evaluate(() => window.__m.tarde))) break;
+      notas.push('       (carga ' + (intento + 1) + ': el CDN tardó más de 7 s y la red de seguridad retiró la cortina; se repite)');
+    }
     const m = await page.evaluate(() => ({
       cubre: window.__m.cubre, aterrizaje: window.ElSotano.aterrizaje,
       cortina: getComputedStyle(document.getElementById('cortina')).display,
@@ -398,7 +404,9 @@ try {
     await page.waitForTimeout(4400);
     const r = await page.evaluate(() => {
       const caja = s => { const e = document.querySelector(s).getBoundingClientRect(); return { l: e.left, t: e.top, r: e.right, b: e.bottom, w: e.width }; };
-      const piezas = { cab: caja('#cabecera .cabecera__menu') && caja(innerWidth > 900 ? '#navegacion' : '#hamburguesa'), placa: caja('#hero-placa'), titulo: caja('#hero-titulo'), entrada: caja('.hero__entrada'), acciones: caja('.hero__acciones'), notas: caja('.hero__notas'), foto: caja('#hero-marco') };
+      /* la foto del hero son los tres marcos (versión por defecto): su caja es la unión de los tres */
+      const union = s => { const rs = [...document.querySelectorAll(s)].map(e => e.getBoundingClientRect()); const l = Math.min(...rs.map(r => r.left)), r = Math.max(...rs.map(r => r.right)); return { l, t: Math.min(...rs.map(r => r.top)), r, b: Math.max(...rs.map(r => r.bottom)), w: r - l }; };
+      const piezas = { cab: caja('#cabecera .cabecera__menu') && caja(innerWidth > 900 ? '#navegacion' : '#hamburguesa'), placa: caja('#hero-placa'), titulo: caja('#hero-titulo'), entrada: caja('.hero__entrada'), acciones: caja('.hero__acciones'), notas: caja('.hero__notas'), foto: union('#hero-marcos .detalle .marco') };
       const choca = (a, b) => a.l < b.r - 1 && b.l < a.r - 1 && a.t < b.b - 1 && b.t < a.b - 1;
       const n = Object.keys(piezas), choques = [];
       for (let i = 0; i < n.length; i++) for (let j = i + 1; j < n.length; j++) if (choca(piezas[n[i]], piezas[n[j]])) choques.push(n[i] + '×' + n[j]);
@@ -406,7 +414,7 @@ try {
     });
     comprobar(r.choques.length === 0, 'checklist 6 · hero ' + w + '×' + h + ': cabecera, panel, titular, entradilla, botones, notas y foto no se pisan' + (r.choques.length ? ' (' + r.choques.join(', ') + ')' : ''));
     comprobar(r.ancho <= r.vw, 'sin desbordamiento horizontal a ' + w + ' px (' + r.ancho + ')');
-    if (w <= 900) comprobar(r.piezas.foto.t >= r.piezas.notas.b && Math.abs(r.piezas.foto.w - (w - 32)) <= 2, 'hero ' + w + ': la foto va debajo y mide el ancho menos 32 px (' + Math.round(r.piezas.foto.w) + ')');
+    if (w <= 900) comprobar(r.piezas.foto.t >= r.piezas.notas.b && Math.abs(r.piezas.foto.w - (w - 32)) <= 2, 'hero ' + w + ': los tres marcos van debajo y ocupan el ancho menos 32 px (' + Math.round(r.piezas.foto.w) + ')');
     if (conCapturas) {
       await page.screenshot({ path: foto(`${w}x${h}-01-hero.png`) });
       const secciones = [['#la-casa', '02-la-casa'], ['#los-apartamentos', '03-apartamentos'], ['#lo-de-todos', '04-lo-de-todos'], ['#detalles', '05-detalles'], ['#historia', '06-historia'], ['#badajoz-a-pie', '07-badajoz-a-pie'], ['#radar', '07b-radar'], ['#opiniones', '08-opiniones'], ['#normas', '09-normas'], ['#fechas', '10-fechas'], ['#contacto', '11-contacto'], ['#pie', '12-pie']];
@@ -419,10 +427,10 @@ try {
     await ctx.close();
   }
 
-  /* ═══════════════ [ELEGIR HERO] la versión de los tres marcos (?hero=marcos) ═══════════════ */
+  /* ═══════════════ [ELEGIR HERO] los tres marcos (la versión elegida, por defecto) ═══════════════ */
   for (const [w, h] of [[390, 844], [1440, 900]]) {
     const { ctx, page } = await nuevaPagina(w < 1000 ? movilOpc(w, h) : { viewport: { width: w, height: h } });
-    await page.goto(BASE + '?hero=marcos', { waitUntil: 'load' });
+    await page.goto(BASE, { waitUntil: 'load' });
     await page.waitForTimeout(4600);
     const r = await page.evaluate(() => {
       const S = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sobresale')) || 12;
@@ -438,6 +446,33 @@ try {
     comprobar(r.n === 3 && r.foto === 'none' && r.vistas === 3 && r.choques.length === 0 && r.ancho <= r.vw && page.errores.length === 0,
       'hero «tres marcos» ' + w + ': tres detalles con sus fotos, sin pisarse entre ellos (listones incluidos) ni con el texto, sin errores' + (r.choques.length ? ' (' + r.choques.join(', ') + ')' : '') + (page.errores[0] ? ': ' + page.errores[0] : ''));
     if (conCapturas) await page.screenshot({ path: foto('hero-v4-marcos-' + w + '.png') });
+    await ctx.close();
+  }
+  /* [ELEGIR HERO] el carrusel (la versión 1) sigue disponible con ?hero=carrusel */
+  for (const [w, h] of [[390, 844], [1440, 900]]) {
+    const { ctx, page } = await nuevaPagina(w < 1000 ? movilOpc(w, h) : { viewport: { width: w, height: h } });
+    const pedidas = []; page.on('request', rq => pedidas.push(rq.url()));
+    await page.goto(BASE + '?hero=carrusel', { waitUntil: 'load' });
+    await page.waitForTimeout(4600);
+    const r = await page.evaluate(() => {
+      const caja = s => { const e = document.querySelector(s).getBoundingClientRect(); return { l: e.left, t: e.top, r: e.right, b: e.bottom, w: e.width }; };
+      const choca = (a, b) => a.l < b.r - 1 && b.l < a.r - 1 && a.t < b.b - 1 && b.t < a.b - 1;
+      const foto = caja('#hero-marco'), texto = ['#hero-placa', '#hero-titulo', '.hero__acciones', '.hero__notas'].map(caja);
+      const antes = document.getElementById('hero-pie').textContent;
+      window.ElSotano.hero.mostrar(1);
+      return { foto, choques: texto.filter(t => choca(t, foto)).length, marcos: getComputedStyle(document.getElementById('hero-marcos')).display, fotos: document.querySelectorAll('.hero__img').length, pie: antes !== document.getElementById('hero-pie').textContent, carrusel: window.ElSotano.hero.carrusel, notas: caja('.hero__notas') };
+    });
+    comprobar(r.carrusel && r.marcos === 'none' && r.fotos === 3 && r.pie && r.choques === 0 && page.errores.length === 0 && (w > 900 || (r.foto.t >= r.notas.b && Math.abs(r.foto.w - (w - 32)) <= 2)),
+      'hero «carrusel» con ?hero=carrusel ' + w + ': tres fotos que pasan con su pie, sin pisar el texto y sin errores' + (page.errores[0] ? ': ' + page.errores[0] : ''));
+    if (conCapturas) await page.screenshot({ path: foto('hero-v1-carrusel-' + w + '.png') });
+    await ctx.close();
+  }
+  {
+    /* por defecto, el carrusel oculto no descarga sus fotos (la 670608170 solo sale en él) */
+    const { ctx, page } = await nuevaPagina();
+    const pedidas = []; page.on('request', rq => pedidas.push(rq.url()));
+    await page.goto(BASE, { waitUntil: 'load' }); await page.waitForTimeout(1500);
+    comprobar(!pedidas.some(u => /670608170-/.test(u)), 'hero por defecto: el carrusel oculto no descarga sus fotos');
     await ctx.close();
   }
 

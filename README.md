@@ -10,15 +10,16 @@ Web para **Apartamentos El Sótano**: apartamentos turísticos en el casco antig
 ```
 node scripts/servir.mjs                 → http://127.0.0.1:4210  (hace falta servirla: lee data/*.json)
 http://127.0.0.1:4210/?revision         → con el mando de las dos versiones y los avisos [VERIFICAR]
-node scripts/verificar.mjs --capturas   → 128 comprobaciones + screenshots/
+node scripts/verificar.mjs --capturas   → 131 comprobaciones + screenshots/
 ```
 
-## Hero: dos versiones para elegir (`[ELEGIR HERO]`)
+## Hero: los tres marcos (`[ELEGIR HERO]`)
 
-- **Versión 1 (por defecto):** carrusel de tres fotos de la casa, cada una con su encuadre: el patio (670608148), la puerta de la vidriera (670608339) y el patio entero (670608170). Las estancias salieron del hero: con gran angular y en marco vertical se quedaban en el sofá y el techo.
-- **Versión 4 (`?hero=marcos`):** tres marcos de detalle escalonados (la vidriera, el patio y el pasillo «LOVE»), cada uno con sus listones, que se montan uno detrás de otro y tienen su propio paralaje.
-- Cuando se elija, borrar lo marcado `[ELEGIR HERO]` de la que se descarta: en `index.html` (el bloque de los marcos o la `<figure class="hero__foto">`, y la línea del script del `<head>`), en `css/estilos.css`, en `js/main.js` (`heroMarcos()`) y en su prueba de `verificar.mjs`.
-- Las fotos principales de las tarjetas también se cambiaron por las que mejor aguantan el 4:3: Nº 1 el salón con la lámpara (650532143), Nº 2 el comedor con el sofá azul (670608660) y Nº 3 la cocina y el comedor (657883547). En el JSON, la primera foto de cada apartamento es la principal.
+- **Elegida, de momento, la versión 4 (por defecto):** tres marcos de detalle escalonados (la puerta de la vidriera, el patio y el pasillo «LOVE»), cada uno con sus listones. Se montan uno detrás de otro al abrirse la cortina y cada marco tiene su paralaje.
+- **La versión 1 sigue disponible con `?hero=carrusel`:** carrusel de tres fotos de la casa (el patio, la vidriera y el patio entero). Oculta, no descarga sus fotos.
+- Por qué se cambió el hero: las estancias, con gran angular y en marco vertical, se quedaban en el sofá y el techo. Con fotos de anfitrión, el hero va con las de la casa (patio, puerta, detalles) y las estancias en sus tarjetas.
+- Si la 1 se descarta del todo, borrar lo marcado `[ELEGIR HERO]` que es suyo: en `index.html`, la `<figure class="hero__foto">` y la línea `hero=carrusel` del script del `<head>`; en `css/estilos.css`, las reglas `.hero__foto`, `.hero__img` y `hero-carrusel`; en `js/main.js`, la parte del carrusel de `hero()`; y en `verificar.mjs`, su prueba.
+- Las fotos principales de las tarjetas se cambiaron por las que mejor aguantan el 4:3: Nº 1 el salón con la lámpara (650532143), Nº 2 el comedor con el sofá azul (670608660) y Nº 3 la cocina y el comedor (657883547). En el JSON, la primera foto de cada apartamento es la principal.
 
 ---
 

@@ -276,6 +276,10 @@
       return;
     }
 
+    /* si la red de seguridad del <head> ya la retiró (los scripts tardaron más de 7 s en llegar),
+       no se monta: si no, la placa del hero se quedaría oculta esperando a una cortina invisible */
+    if (html.classList.contains('cortina-fuera')) { retirar(); return; }
+
     var capa = $('#cortina-capa'), interior = $('#cortina-interior'), lugar = $('#cortina-lugar');
     var borde = $('#cortina-borde-d'), caja = $('#cortina-placa');
     heroPlaca.classList.add('es-esperando');
@@ -406,6 +410,8 @@
     var fotos = todos('.hero__img', seccion);
     var pie = $('#hero-pie'), cuenta = $('#hero-cuenta'), verif = $('#hero-pie-verificar');
     var marco = $('#hero-marco');
+    /* [ELEGIR HERO] el carrusel solo trabaja si es la versión que se ve (?hero=carrusel) */
+    var carrusel = html.classList.contains('hero-carrusel');
     var actual = 0, temporizador = null, encima = false;
     function mostrar(i) {
       actual = (i + fotos.length) % fotos.length;
@@ -422,22 +428,25 @@
     marco.addEventListener('pointerenter', function () { encima = true; });
     marco.addEventListener('pointerleave', function () { encima = false; });
     mostrar(0);
-    alAbrirse(programar);
-    API.hero = { mostrar: mostrar, get actual() { return actual; } };
+    if (carrusel) alAbrirse(programar);
+    API.hero = { mostrar: mostrar, get actual() { return actual; }, carrusel: carrusel };
 
     if (!movimiento) return;
     var resto = todos('.hero__entrada, .hero__acciones > *, .hero__notas', seccion);
     var nav = todos('.cabecera__nav > a');
     var fotosCaja = $('#hero-fotos');
-    prepararListones(marco);
     gsap.set(resto, { opacity: 0, y: 18 });
-    gsap.set(fotosCaja, { scale: 1.1 });
     if (!esMovil()) gsap.set(nav, { opacity: 0, y: -10 });
+    alAbrirse(function () {
+      gsap.to(resto, { opacity: 1, y: 0, duration: 1.1, ease: 'expo.out', stagger: 0.08, delay: 0.7 });
+      gsap.to(nav, { opacity: 1, y: 0, duration: 0.9, ease: 'expo.out', stagger: 0.06, delay: 0.5, clearProps: 'transform,translate,opacity' });
+    });
+    if (!carrusel) return;
+    prepararListones(marco);
+    gsap.set(fotosCaja, { scale: 1.1 });
     alAbrirse(function () {
       montarListones(marco, 0.25);
       gsap.to(fotosCaja, { scale: 1, duration: 2.2, ease: 'expo.out', delay: 0.4 });
-      gsap.to(resto, { opacity: 1, y: 0, duration: 1.1, ease: 'expo.out', stagger: 0.08, delay: 0.7 });
-      gsap.to(nav, { opacity: 1, y: 0, duration: 0.9, ease: 'expo.out', stagger: 0.06, delay: 0.5, clearProps: 'transform,translate,opacity' });
     });
     /* paralaje suave dentro del marco */
     gsap.fromTo(fotosCaja, { yPercent: -4 }, {
@@ -450,7 +459,7 @@
      abrirse la cortina y cada marco tiene su paralaje (profundidades distintas) */
   (function heroMarcos() {
     var caja = $('#hero-marcos');
-    if (!caja || !html.classList.contains('hero-marcos')) return;
+    if (!caja || html.classList.contains('hero-carrusel')) return;
     var detalles = todos('.detalle', caja);
     var marcosD = detalles.map(function (d) { return d.querySelector('.marco'); });
     if (!movimiento) return;

@@ -296,9 +296,11 @@ html.con-js.cortina-fuera .cortina, html.con-js .cortina.es-fuera { display: non
 .hero__pie-texto { flex: 1; }
 .hero__cuenta { font: 400 1.15rem/1 var(--tipo-rotulo); letter-spacing: .06em; color: var(--acento-texto); }
 
-/* [ELEGIR HERO] versión «tres marcos»: tres detalles escalonados en su marco de listones */
-html:not(.hero-marcos) .hero__marcos { display: none; }
-html.hero-marcos .hero__foto { display: none; }
+/* [ELEGIR HERO] versión «tres marcos» (la elegida, por defecto): tres detalles escalonados en su
+   marco de listones. El carrusel de fotos (la 1) solo aparece con ?hero=carrusel */
+.hero__foto { display: none; }
+html.hero-carrusel .hero__foto { display: flex; }
+html.hero-carrusel .hero__marcos { display: none; }
 .hero__marcos {
   position: relative; display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: repeat(12, minmax(0, 1fr));
