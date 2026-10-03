@@ -125,6 +125,13 @@ const CITAS = [
    y comprueba que sigue puesta: bajo carga, la red de seguridad de 6 s puede haberla retirado ya, y
    un elemento con display:none devuelve transform «none». Si pasa, se recarga (hasta tres veces). */
 async function cortinaPausada(page) {
+  /* solo en estas páginas de prueba: sin las redes de seguridad de 6 y 7 s, que retirarían la
+     cortina pausada mientras se hace la captura (la web no se toca) */
+  await page.context().addInitScript(() => {
+    const original = window.setTimeout;
+    window.setTimeout = function (fn, ms) { if (ms === 6000 || ms === 7000) return 0; return original.apply(this, arguments); };
+  });
+  await page.reload({ waitUntil: 'domcontentloaded' });
   for (let intento = 0; intento < 3; intento++) {
     await page.waitForFunction(() => window.ElSotano && window.ElSotano.cortina && window.ElSotano.cortina.tl && window.ElSotano.cortina.tl.time() > 0.02, null, { polling: 'raf', timeout: 8000 });
     const puesta = await page.evaluate(() => { const tl = window.ElSotano.cortina.tl; tl.pause(); return tl.time() < 1.5 && getComputedStyle(document.getElementById('cortina')).display === 'block'; });
