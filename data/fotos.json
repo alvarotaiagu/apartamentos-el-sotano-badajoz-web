@@ -1,5 +1,5 @@
 {
- "fuente": "Fotos subidas por el propio alojamiento a su ficha de Booking (feb.-abr. 2025), graduadas con scripts/gradar.py. Sin recortes ni retoques de contenido.",
+ "fuente": "Fotos subidas por el propio alojamiento a su ficha de Booking (feb.-abr. 2025) y, la fachada, a su motor de Octorate (original de 3200 px), graduadas con scripts/gradar.py. Sin recortes ni retoques de contenido.",
  "fotos": [
   {
    "id": "650532149",
@@ -493,11 +493,11 @@
    ]
   },
   {
-   "id": "671007138",
+   "id": "1772031605176",
    "grupo": "casa",
    "alt": "Fachada del nº 6: planta baja de almagre, panel blanco con el logo y la placa AT",
-   "w": 3000,
-   "h": 2002,
+   "w": 3200,
+   "h": 2136,
    "anchos": [
     480,
     960,
