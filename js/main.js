@@ -34,7 +34,7 @@
   /* lo mismo que data/config.json, por si el JSON no llega */
   var CONFIG = {
     telefono: '657 77 11 35', telefono_enlace: '+34657771135',
-    email: 'apartamentoselsotano@gmail.com', whatsapp: null,
+    email: 'apartamentoselsotano@gmail.com', whatsapp: null, reservas: null,
     booking: 'https://www.booking.com/hotel/es/apartamentos-el-sotano.es.html',
     segundo_portal: null, foto_antigua: null
   };
@@ -644,6 +644,7 @@
     });
     dlg.addEventListener('click', function (e) { if (e.target === dlg) cerrar(); });
     $('#dialogo-fechas').addEventListener('click', function () {
+      if (/^https:\/\//i.test(String(CONFIG.reservas || ''))) { window.open(CONFIG.reservas, '_blank', 'noopener'); return; }
       var n = ap && ap.numero;
       cerrar(true);
       elegirApartamento(n);
@@ -1224,6 +1225,33 @@
     });
     if (reabrir) reabrir.addEventListener('click', function () { ver(true); ok.focus(); });
   })();
+
+  /* ───────────────── motor de reservas (Octorate) ─────────────────
+     Mientras "reservas" sea null en data/config.json no pasa nada: los botones
+     siguen llevando al formulario de consulta. Con una URL https, todos los
+     «Consultar fechas» pasan a ser «Reservar» y salen al motor, y el formulario
+     queda como consulta para quien prefiera preguntar antes. */
+  function motorDeReservas() {
+    var url = String(CONFIG.reservas || '');
+    if (!/^https:\/\//i.test(url)) return;
+    todos('a[href="#fechas"]').forEach(function (a) {
+      a.href = url; a.target = '_blank'; a.rel = 'noopener';
+      a.textContent = 'Reservar';
+    });
+    var dlgBtn = $('#dialogo-fechas');
+    if (dlgBtn) dlgBtn.textContent = 'Reservar este apartamento';
+    var ante = $('#fechas .antetitulo'), entrada = $('#fechas .seccion__entrada');
+    if (ante) ante.textContent = 'Consultas';
+    if (entrada && !$('#fechas .fechas__motor')) {
+      entrada.textContent = '¿Prefieres preguntarnos antes de reservar? Rellena esto y te dejamos escrito el mensaje para Manuel. Lo envías tú, por email o como prefieras, y él te contesta con la disponibilidad y el precio de esas fechas.';
+      var p = crear('p', 'fechas__motor');
+      var a = crear('a', 'boton boton--almagre', 'Reservar online');
+      a.href = url; a.target = '_blank'; a.rel = 'noopener';
+      p.appendChild(a);
+      entrada.parentNode.insertBefore(p, entrada.nextSibling);
+    }
+  }
+  promesaConfig.then(motorDeReservas);
 
   var anio = $('#anio');
   if (anio) anio.textContent = new Date().getFullYear();

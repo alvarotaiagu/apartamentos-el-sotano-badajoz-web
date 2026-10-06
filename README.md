@@ -5,7 +5,7 @@ Web para **Apartamentos El Sótano**: apartamentos turísticos en el casco antig
 **Estado:** construida el 2 de octubre de 2026 y publicada ese mismo día en GitHub Pages: https://alvarotaiagu.github.io/apartamentos-el-sotano-badajoz-web/ (repo público `alvarotaiagu/apartamentos-el-sotano-badajoz-web`). No está en Rúa.
 - Lleva `noindex, nofollow` en todas las páginas.
 - Lleva el mando de dos versiones, que solo aparece con `?revision` en la URL.
-- Antes de entregarla, sigue la sección «Quitar el mando de maqueta».
+- **Cliente cerrado el 5-10-2026.** Para entregarla, sigue la sección «Entrega a producción» (`scripts/entregar.mjs`); «Quitar el mando de maqueta» es solo lo que hace por dentro.
 
 ```
 node scripts/servir.mjs                 → http://127.0.0.1:4210  (hace falta servirla: lee data/*.json)
@@ -127,6 +127,27 @@ node scripts/quitar-historia.mjs ../copia-de-la-web     (sobre una copia)
 No toca nada más: `main.js` y `estilos.css` no dependen del módulo. `verificar.mjs` lo ejecuta sobre una copia temporal y comprueba que no queda sección, enlace ni petición de sus archivos, que no hay errores ni 404 y que el resto de secciones sigue en orden.
 
 **La foto antigua:** cuando Manuel la mande, guardarla en `assets/historia/` y rellenar `"foto_antigua"` en `data/config.json` (hay un ejemplo). El hueco aparece solo, con sus listones.
+
+## Entrega a producción (cliente cerrado el 5-10-2026: 400 € + IVA)
+
+La maqueta (esta carpeta) se queda `noindex` y con el mando. Lo que se publica en el dominio del cliente es una **copia** que genera un solo comando:
+
+```
+node scripts/entregar.mjs --dominio <dominio-final> [--destino ../el-sotano-entrega]
+```
+
+Hace `quitar-mando`, quita el `noindex` (salvo en la 404), pone canonical, `og:url`, `og:image` y JSON-LD absolutos, escribe `sitemap.xml`, `robots.txt` y `CNAME`, rellena el titular y el NIF de los legales, ajusta los textos legales si hay motor de reservas, quita README y CREDITOS (notas internas) y **lista lo que bloquea**. Sale con código 1 mientras quede algún bloqueante: hasta que diga «Lista para publicar», no se publica. El dominio no hace falta decidirlo antes: es un argumento.
+
+Los datos que lo desbloquean viven en `data/config.json`:
+
+| Campo | Qué es | Efecto |
+|---|---|---|
+| `reservas` | URL del motor de reservas de Octorate (https) | «Consultar fechas» pasa a «Reservar» en cabecera, hero, pie y diálogos y sale al motor; el formulario queda como «Consultas». Con `null`, todo sigue como en la maqueta |
+| `titular`, `nif` | datos fiscales de quien factura | aviso legal y privacidad; sin ellos, bloquea |
+| `domicilio_fiscal` | solo si no es el del alojamiento | aviso legal |
+| `whatsapp`, `segundo_portal` | ver «Pendientes para Manuel» | no bloquean; avisan |
+
+Además bloquea mientras `data/apartamentos.json` siga con `"provisional": true`: hay que confirmar con Manuel cuántos son y cómo se llaman. Las librerías (GSAP, ScrollTrigger, Lenis) están en `assets/vendor/`, ya no por CDN. Después de entregar: `node scripts/verificar.mjs` sobre la maqueta, publicar la copia en el repo del cliente con el dominio ya apuntado y activar HTTPS en GitHub Pages.
 
 ## Quitar el mando de maqueta
 

@@ -89,7 +89,8 @@ async function irA(page, selector, margen = 0.15, espera = 1600) {
 }
 const PUERTO = 4211;
 const BASE = 'http://127.0.0.1:' + PUERTO + '/';
-const CDN = /cdn\.jsdelivr\.net\/npm\/(gsap|lenis)/;
+/* las librerías van en assets/vendor/ (no hay CDN): bloquearlas simula que no cargan */
+const CDN = /assets\/vendor\/(gsap|ScrollTrigger|lenis)/;
 
 const servidor = await servir(raiz, PUERTO);
 const navegador = await chromium.launch();
@@ -173,7 +174,7 @@ try {
     comprobar(m.aterrizaje && m.aterrizaje.dx < 2 && m.aterrizaje.dy < 2 && m.aterrizaje.dw < 2, 'cortina: el panel con sus listones aterriza en el panel del hero ' + JSON.stringify(m.aterrizaje));
     comprobar(m.cortina === 'none' && m.placa === 'visible', 'cortina: acaba en display:none y el panel real se ve');
     comprobar(m.mov, 'checklist 7 · con GSAP y sin movimiento reducido hay html.con-movimiento');
-    comprobar(m.lenis, 'Lenis carga (desde jsDelivr) y gobierna el scroll');
+    comprobar(m.lenis, 'Lenis carga (desde assets/vendor) y gobierna el scroll');
     await page.mouse.move(700, 450);
     await hastaAbajo(page);
     const imgs = await page.evaluate(() => [...document.images].filter(i => i.getBoundingClientRect().height > 0 && i.complete).map(i => ({ src: i.currentSrc, w: i.naturalWidth })));
@@ -711,6 +712,59 @@ try {
     await ctx.close();
   }
 
+  /* ═══════════════ motor de reservas: "reservas" en config.json convierte los «Consultar fechas» en «Reservar» ═══════════════ */
+  {
+    const MOTOR = 'https://book.octorate.com/octobook/site/reservation/calendar.xhtml?codice=PRUEBA';
+    const { ctx, page } = await nuevaPagina({ reducedMotion: 'reduce' });
+    /* nunca se llega a Octorate de verdad: la pestaña nueva se queda en blanco */
+    await ctx.route('https://book.octorate.com/**', rr => rr.fulfill({ status: 200, contentType: 'text/html', body: '<title>motor</title>' }));
+    await page.goto(BASE, { waitUntil: 'load' }); await page.waitForTimeout(800);
+    comprobar(await page.evaluate(() => document.querySelectorAll('a[href="#fechas"]').length >= 3 && !document.querySelector('.fechas__motor')),
+      'motor: con "reservas": null los botones siguen llevando al formulario (#fechas)');
+    const cfg = JSON.parse(JSON.stringify(configJson)); cfg.reservas = MOTOR;
+    await page.route('**/data/config.json', rr => rr.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(cfg) }));
+    await page.reload({ waitUntil: 'load' }); await page.waitForTimeout(1200);
+    const m = await page.evaluate(() => ({
+      aFechas: document.querySelectorAll('a[href="#fechas"]').length,
+      motor: [...document.querySelectorAll('a[target="_blank"]')].filter(a => /octorate/.test(a.href)).map(a => a.textContent.trim() + '|' + a.rel),
+      btn: document.getElementById('dialogo-fechas').textContent,
+      ante: document.querySelector('#fechas .antetitulo').textContent,
+      form: !!document.getElementById('reserva')
+    }));
+    comprobar(m.aFechas === 0 && m.motor.length >= 4 && m.motor.every(t => /^Reservar/.test(t) && /noopener/.test(t)),
+      'motor: con la URL puesta, cabecera, hero, pie y la sección llevan a Octorate en pestaña nueva con noopener (' + m.motor.length + ' enlaces)');
+    comprobar(m.form && m.ante === 'Consultas' && /^Reservar/.test(m.btn), 'motor: el formulario sigue como «Consultas» y el diálogo ofrece «Reservar»');
+    await page.locator('#los-apartamentos button').first().click({ force: true });
+    await page.waitForTimeout(1200);
+    const [nueva] = await Promise.all([ctx.waitForEvent('page', { timeout: 4000 }).catch(() => null), page.locator('#dialogo-fechas').click({ force: true })]);
+    comprobar(!!nueva && nueva.url().startsWith('https://book.octorate.com/'), 'motor: «Reservar este apartamento» abre el motor en otra pestaña');
+    await ctx.close();
+  }
+
+  /* ═══════════════ entrega a producción: la copia indexable, con dominio, y los bloqueos que quedan ═══════════════ */
+  {
+    const dest = fs.mkdtempSync(path.join(os.tmpdir(), 'sotano-entrega-'));
+    let salida = '', codigo = 0;
+    try { salida = execFileSync(process.execPath, [path.join(raiz, 'scripts/entregar.mjs'), '--dominio', 'prueba.example', '--destino', dest], { encoding: 'utf8' }); }
+    catch (e) { codigo = e.status; salida = String(e.stdout || ''); }
+    const l = f => fs.readFileSync(path.join(dest, f), 'utf8');
+    const idx = l('index.html');
+    comprobar(!/noindex/.test(idx) && !/noindex/.test(l('aviso-legal.html')) && !/noindex/.test(l('privacidad.html')) && /noindex/.test(l('404.html')),
+      'entrega: indexable salvo la 404');
+    comprobar(idx.includes('rel="canonical" href="https://prueba.example/"') && idx.includes('og:image" content="https://prueba.example/assets/og-el-sotano.jpg"') && idx.includes('"url": "https://prueba.example/"'),
+      'entrega: canonical, og:image y JSON-LD con el dominio');
+    comprobar(fs.readFileSync(path.join(dest, 'CNAME'), 'utf8').trim() === 'prueba.example' && l('robots.txt').includes('Sitemap: https://prueba.example/sitemap.xml') && (l('sitemap.xml').match(/<loc>/g) || []).length === 3,
+      'entrega: CNAME, robots.txt y sitemap.xml (3 páginas)');
+    comprobar(!fs.existsSync(path.join(dest, 'README.md')) && !fs.existsSync(path.join(dest, 'CREDITOS.md')) && !fs.existsSync(path.join(dest, 'scripts')),
+      'entrega: sin README, créditos ni scripts');
+    comprobar(!/jsdelivr|cdnjs/i.test(idx), 'entrega: ninguna librería sale de un CDN');
+    /* mientras falten titular/NIF y los apartamentos sean provisionales, NO debe dar luz verde */
+    const sinDatos = !configJson.titular || !configJson.nif;
+    comprobar(sinDatos ? (codigo === 1 && /BLOQUEA/.test(salida) && !/Lista para publicar/.test(salida)) : true,
+      'entrega: sin titular/NIF el informe bloquea y no dice «Lista para publicar»');
+    fs.rmSync(dest, { recursive: true, force: true });
+  }
+
   /* ═══════════════ opiniones: una cita cada vez, firmadas «Opinión en Booking» ═══════════════ */
   {
     const { ctx, page } = await nuevaPagina();
@@ -870,7 +924,7 @@ try {
           'JSON-LD LodgingBusiness: dirección del nº 6, geo, teléfono, email, petsAllowed, sameAs y SIN aggregateRating');
         const og = await page.evaluate(() => document.querySelector('meta[property="og:image"]').content);
         comprobar(fs.existsSync(path.join(raiz, og)), 'og:image hecha a propósito (' + og + ')');
-        const v = await page.evaluate(() => [...document.querySelectorAll('link[rel="stylesheet"], script[src]')].map(n => n.getAttribute('href') || n.getAttribute('src')).filter(u => !/^https?:/.test(u)));
+        const v = await page.evaluate(() => [...document.querySelectorAll('link[rel="stylesheet"], script[src]')].map(n => n.getAttribute('href') || n.getAttribute('src')).filter(u => !/^https?:/.test(u) && !u.startsWith('assets/vendor/')));
         comprobar(v.length === 4 && v.every(u => /\?v=[0-9a-f]{8}$/.test(u)), 'CSS y JS propios versionados con ?v=<huella> (' + v.length + ')');
         comprobar(!(await page.evaluate(() => document.documentElement.outerHTML)).includes('cdnjs.cloudflare.com/ajax/libs/lenis'), 'Lenis no sale de cdnjs (404 silencioso)');
         /* interlineado: ningún titular en League Gothic con tildes por debajo de 1,02 */

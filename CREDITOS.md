@@ -26,7 +26,7 @@ la tipografía están pendientes (ver README).
 - Distancias a pie: routing.openstreetmap.de (perfil peatonal, OSRM), datos © OpenStreetMap.
 - Nombres de los monumentos: web del Ayuntamiento de Badajoz (aytobadajoz.es/es/ayto/monumentos) y su web de turismo (turismo.aytobadajoz.es).
 
-## Librerías (por CDN, jsDelivr)
+## Librerías (alojadas en `assets/vendor/`, sin CDN: la web no manda la IP de nadie a terceros)
 - GSAP 3.12.5 y ScrollTrigger (GreenSock, licencia estándar «no charge»).
 - Lenis 1.1.13 (darkroom.engineering, MIT).
 
