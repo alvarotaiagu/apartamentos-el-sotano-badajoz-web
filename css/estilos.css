@@ -31,7 +31,7 @@
   --cortina: #5A3730;             /* almagre en sombra de la cortina: distinto del muro del hero */
   --liston: #B48A5E;
   --bronce: #8F7049;
-  --gris-logo: #8A8580;
+  --gris-logo: #7B7B7B;
   --tinta: #2B211C;
   --apagado: #62564E;
   --acento-texto: #6F573A;                                         /* respaldo sin color-mix */
@@ -142,9 +142,9 @@ ul, ol { padding: 0; list-style: none; }
 
 /* el logo vivo (hero y cortina): tres capas; la sombra es un trazo, el hueco blanco un halo del color del panel */
 .logo-vivo { width: 100%; height: auto; overflow: visible; }
-.logo__sombra use { fill: none; stroke: var(--gris-logo); stroke-width: 2.4; stroke-linejoin: round; }
+.logo__sombra use { fill: none; stroke: var(--gris-logo); stroke-width: 3.4; stroke-linejoin: round; }
 .logo__letras use { fill: var(--bronce); stroke: var(--logo-fondo, var(--panel)); stroke-width: 7; stroke-linejoin: round; paint-order: stroke; }
-.logo__apart use { fill: #77736E; }
+.logo__apart use { fill: #7B7B7B; }
 
 /* ═══════════════ botones y textos comunes ═══════════════ */
 .boton {

@@ -48,9 +48,9 @@ ESC = 8
 VB = (123, 371, 840, 346)          # mismo encuadre que el vector de los bocetos
 VB_CORTO = (123, 371, 840, 278)    # sin «APARTAMENTOS»
 SOMBRA_D = (-8, 8)
-SOMBRA_GROSOR = 2.4
+SOMBRA_GROSOR = 3.4                # 2,4 salía más fino que el logo oficial del cliente (PDF de Canva, 6-10-2026)
 HALO = 7.0                          # ancho del trazo-halo: deja ~2,3 u de blanco entre letra y sombra
-COL = dict(letras='#8F7049', sombra='#8A8580', apart='#77736E',
+COL = dict(letras='#8F7049', sombra='#7B7B7B', apart='#7B7B7B',
            letras_osc='#C9A574', sombra_osc='rgba(247,244,239,.42)', apart_osc='rgba(247,244,239,.72)')
 
 im = np.asarray(Image.open(JPG).convert('RGB')).astype(np.float64)
@@ -474,7 +474,7 @@ fav = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="%.1f %.1f %d %d">'
        '<mask id="m" maskUnits="userSpaceOnUse" x="%.1f" y="%.1f" width="%d" height="%d"><rect x="%.1f" y="%.1f" width="%d" height="%d" fill="#fff"/>'
        '<use href="#f" fill="#000" stroke="#000" stroke-width="%.1f" stroke-linejoin="round"/></mask></defs>'
        '<rect x="%.1f" y="%.1f" width="%d" height="%d" rx="46" fill="#F7F4EF"/>'
-       '<path mask="url(#m)" d="%s" fill="none" stroke="#8A8580" stroke-width="5" stroke-linejoin="round"/>'
+       '<path mask="url(#m)" d="%s" fill="none" stroke="#7B7B7B" stroke-width="5" stroke-linejoin="round"/>'
        '<use href="#f" fill="#8F7049"/></svg>\n'
        % (fx, fy, lado, lado, fav_d, fx, fy, lado, lado, fx, fy, lado, lado, HALO + 3, fx, fy, lado, lado, fav_s))
 with open(os.path.join(RAIZ, 'assets', 'favicon.svg'), 'w', encoding='utf-8') as f:
@@ -494,14 +494,14 @@ for i, a in enumerate(apart):
     sprite.append('<path id="lg-ap-%d" fill-rule="evenodd" d="%s"/>' % (i, a['d']))
 # símbolos estáticos (cabecera, contacto, pie): los colores entran por custom properties,
 # que sí cruzan al árbol del <use>; los selectores de la página no
-e_sombra = 'fill:none;stroke:var(--logo-sombra,#8A8580);stroke-width:%.1f;stroke-linejoin:round' % SOMBRA_GROSOR
+e_sombra = 'fill:none;stroke:var(--logo-sombra,#7B7B7B);stroke-width:%.1f;stroke-linejoin:round' % SOMBRA_GROSOR
 e_letras = 'fill:var(--logo-letras,#8F7049);stroke:var(--logo-fondo,#FDFCFA);stroke-width:%.1f;stroke-linejoin:round;paint-order:stroke' % HALO
 for idm, v, con_ap in (('lg-logo', VB, True), ('lg-logo-corto', VB_CORTO, False)):
     sprite.append('<symbol id="%s" viewBox="%s">' % (idm, vb(v)))
     sprite.append('<use href="#lg-sombra" style="%s"/>' % e_sombra)
     sprite.append('<use href="#lg-letras" style="%s"/>' % e_letras)
     if con_ap:
-        sprite.append('<g style="fill:var(--logo-apart,#77736E)">' + ''.join('<use href="#lg-ap-%d"/>' % i for i in range(len(apart))) + '</g>')
+        sprite.append('<g style="fill:var(--logo-apart,#7B7B7B)">' + ''.join('<use href="#lg-ap-%d"/>' % i for i in range(len(apart))) + '</g>')
     sprite.append('</symbol>')
 sprite.append('</defs></svg>')
 bloque = '<!-- logo:inicio · generado por scripts/logo.py, no editar a mano -->\n' + ''.join(sprite) + '\n<!-- logo:fin -->'
