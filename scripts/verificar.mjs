@@ -98,6 +98,9 @@ async function nuevaPagina(opciones = {}, { cookiesVistas = true, bloquearCDN = 
   const ctx = await navegador.newContext({ viewport: { width: 1440, height: 900 }, ...opciones });
   if (cookiesVistas) await ctx.addInitScript(() => { try { localStorage.setItem('elsotano-cookies', 'ok'); } catch (e) {} });
   if (bloquearCDN) await ctx.route(CDN, r => r.abort());
+  /* config.json lleva la URL real de Octorate y el segundo portal; el resto de pruebas miden la web SIN ellos
+     (las que los necesitan los ponen con page.route, que tiene prioridad sobre ctx.route) */
+  await ctx.route('**/data/config.json', rr => rr.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ...configJson, reservas: null, segundo_portal: null }) }));
   const page = await ctx.newPage();
   page.errores = []; page.respuestas = [];
   page.on('console', m => { if (m.type() === 'error') page.errores.push(m.text()); });
@@ -918,7 +921,8 @@ try {
         comprobar(/AT-BA-00367/.test(await page.evaluate(() => document.querySelector('.pie').textContent)), 'pie: licencia AT-BA-00367');
         comprobar(/Hablamos español y portugués/.test(r.texto) && /Instagram/.test(await page.evaluate(() => document.querySelector('.pie').textContent)), 'pie: idiomas e Instagram');
         comprobar(!/\[PENDIENTE\]|\bTODO\b/.test(r.texto) && !/lorem ipsum/i.test(r.texto), 'portada sin [PENDIENTE], TODO ni relleno');
-        comprobar(/¿Vienes en coche\?/.test(r.texto) && /Pregúntanos por el aparcamiento/.test(r.texto), 'parking: solo «¿Vienes en coche? Pregúntanos por el aparcamiento»');
+        comprobar(/¿Vienes en coche\?/.test(r.texto) && /Aparcamiento Alcazaba, a unos 8 minutos andando/.test(r.texto) && /Parking San Atón tenemos una tarifa especial: se reserva con nosotros/.test(r.texto),
+          'parking: lo que dijo Manuel el 6-10-2026 (Alcazaba gratuito a 8 min; tarifa especial en San Atón, reservando con ellos) y nada más');
         const ld = await page.evaluate(() => JSON.parse(document.getElementById('datos-estructurados').textContent));
         comprobar(ld['@type'] === 'LodgingBusiness' && ld.address.streetAddress === 'Calle Virgen de la Soledad, 6' && ld.geo && ld.telephone && ld.email && ld.petsAllowed === true && ld.sameAs.length === 2 && !('aggregateRating' in ld) && !('review' in ld) && !JSON.stringify(ld).includes('ratingCount'),
           'JSON-LD LodgingBusiness: dirección del nº 6, geo, teléfono, email, petsAllowed, sameAs y SIN aggregateRating');

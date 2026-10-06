@@ -25,6 +25,17 @@ node scripts/verificar.mjs --capturas   → 131 comprobaciones + screenshots/
 
 ## Pendientes para Manuel
 
+**Respondido el 6-10-2026 por WhatsApp** (la lista de abajo conserva el texto original; lo de aquí manda):
+- **Titular:** Doble M Gestión de Espacios y Eventos SLL · B70917380 · C/ Montesinos 3, 06002 Badajoz (ya en `data/config.json`). Facturar a nombre de la sociedad.
+- **Dominio:** `apartamentoselsotano.es`, ya comprado por ellos. Falta saber quién gestiona el DNS.
+- **Reservas:** motor de Octorate (enlace directo, `codice=906956`, ya en `"reservas"`). Descartado el widget `form.js`: carga 4 hosts de terceros por visita y sale en inglés.
+- **Son 5 apartamentos**, uno ocupado de larga duración que también debe salir. **Faltan sus datos** (nombre o número, m², camas, fotos) y cómo mostrarlo.
+- **Dos accesos:** 2 apartamentos por uno y 3 por el otro. Puesto Montesinos 3 como segundo portal (a confirmar que es ese). **Falta qué apartamentos entran por cada uno.**
+- **Aparcamiento:** gratuito más cercano, «Aparcamiento Alcazaba», a unos 8 min andando; tarifa especial en el «Parking San Atón» reservando con ellos. Ya en la web (confirmar cómo se escribe «San Atón»).
+- **Ropa de cama y toallas:** todo incluido, sin coste. Ya correcto en la web.
+- **Fotos de Booking:** puede usarlas, sin problema (por WhatsApp).
+- **Logo vector y fotos del restaurante:** el logo, lo mirará. Para el restaurante pasó dos enlaces (Facebook «Badajoz corazón ibérico» y el blog laciudaddebadajoz de febrero de 2019). **Son fotos de terceros**: el blog atribuye las suyas a Ángel Manuel Vaca Arévalo, el «Grupo de Pecalmo» y «Personajes de Badajoz». Sin permiso de su autor no se publican. Ojo: el blog sitúa el restaurante en **Virgen de la Soledad nº 8**, y la web dice nº 6.
+
 1. **El logo:** ¿tiene el vector original (AI, PDF o SVG)? ¿Cómo se llama la tipografía de «EL SÓTANO» y la de «APARTAMENTOS»? El de la web está redibujado desde su primer post de Instagram (ver «El logo» más abajo).
 2. **Dos portales:** Booking y la fachada dicen C/ Virgen de la Soledad, 6; Google dice C/ Montesinos, 3, a unos 30 m. En Instagram sale un segundo portal con el nº 3 y un monograma «S». ¿Son dos portales? ¿Qué apartamentos hay en cada uno? ¿Qué dirección damos? Cuando conteste, rellenar `"segundo_portal"` en `data/config.json` (hay un ejemplo en ese archivo) y el contacto enseña las dos puertas.
 3. **¿Cuatro o cinco apartamentos?** Booking enseña cuatro y la bio de Instagram dice «cinco». ¿Tienen nombre o número propio? Los «Nº 1-4» son nuestros.

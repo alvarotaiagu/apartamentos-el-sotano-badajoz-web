@@ -3,10 +3,10 @@
  "telefono_enlace": "+34657771135",
  "email": "apartamentoselsotano@gmail.com",
  "whatsapp": null,
- "reservas": null,
- "titular": null,
- "nif": null,
- "domicilio_fiscal": null,
+ "reservas": "https://book.octorate.com/octobook/site/reservation/calendar.xhtml?codice=906956",
+ "titular": "Doble M Gestión de Espacios y Eventos SLL",
+ "nif": "B70917380",
+ "domicilio_fiscal": "C/ Montesinos, 3 · 06002 Badajoz",
  "booking": "https://www.booking.com/hotel/es/apartamentos-el-sotano.es.html",
  "instagram": "https://www.instagram.com/apartamentoselsotano/",
  "google": "https://www.google.com/maps/search/?api=1&query=Apartamentos+El+S%C3%B3tano+Badajoz",
@@ -18,7 +18,9 @@
   "lat": 38.879481,
   "lon": -6.9701205
  },
- "segundo_portal": null,
+ "segundo_portal": {
+  "calle": "C/ Montesinos, 3"
+ },
  "segundo_portal_ejemplo": {
   "calle": "C/ Montesinos, 3",
   "nota": "Rellenar «segundo_portal» con este formato cuando Manuel confirme qué apartamentos hay en cada portal; entonces el contacto enseña las dos puertas."

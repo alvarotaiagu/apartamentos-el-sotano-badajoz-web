@@ -8,8 +8,9 @@ se graduaron con `scripts/gradar.py`: solo tono, sin recortes ni retoques de
 contenido. Ninguna es de un banco de imágenes. No se usa ninguna foto de
 Instagram (las que tienen texto encima ni la fachada nocturna del nº 3).
 
-Antes de publicar: pedir a Manuel permiso por escrito para usarlas en su web
-(son suyas, pero las sacamos de Booking).
+Permiso: Manuel confirmó por WhatsApp el 6-10-2026 que se pueden usar en su web.
+Las fotos antiguas del restaurante (blog «La ciudad de Badajoz», Facebook «Badajoz
+corazón ibérico») son de terceros y NO se usan sin permiso de su autor.
 
 ## Logo
 Redibujado a partir de su primer post de Instagram (@apartamentoselsotano,

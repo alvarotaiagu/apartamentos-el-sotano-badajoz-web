@@ -78,6 +78,8 @@ if (config.titular && config.nif) {
 }
 if (config.domicilio_fiscal) {
   cambiar('aviso-legal.html', '<td>C/ Virgen de la Soledad, 6 · 06002 Badajoz</td>', `<td>${html(config.domicilio_fiscal)}</td>`, 'el domicilio');
+  /* en privacidad el domicilio va tras el NIF: que no sea el del alojamiento si el titular vive en otro sitio */
+  cambiar('privacidad.html', ' · C/ Virgen de la Soledad, 6 · 06002 Badajoz · <a href="mailto', ` · ${html(config.domicilio_fiscal)} · <a href="mailto`, 'el domicilio de privacidad');
 }
 
 /* ── 5 · con motor de reservas ── */
