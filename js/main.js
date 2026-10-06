@@ -559,7 +559,8 @@
         var m2 = crear('span', 'piso__m2', ' · ' + apto.m2 + ' ');
         m2.appendChild(crear('small', null, 'm²'));
         titulo.appendChild(m2);
-        $('#dialogo-booking').textContent = 'En Booking: «' + apto.nombre_booking + '»';
+        /* Se reserva en Octorate: el nombre que hay que reconocer es el de su motor, no el de Booking */
+        $('#dialogo-booking').textContent = apto.nombre_reserva ? 'Al reservar: «' + apto.nombre_reserva + '»' : 'En Booking: «' + apto.nombre_booking + '»';
         lineas($('#dialogo-camas'), apto.camas);
         lineas($('#dialogo-extras'), apto.extras);
         $('#dialogo-comunes').textContent = (comunes || []).join(' · ') + '.';
