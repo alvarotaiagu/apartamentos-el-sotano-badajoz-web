@@ -694,8 +694,8 @@ try {
     await page.click('#reserva button[type="submit"]');
     const r = await page.evaluate(() => ({ href: document.getElementById('reserva-email').getAttribute('href'), texto: document.getElementById('reserva-texto').textContent, wa: document.getElementById('reserva-whatsapp').disabled }));
     const cuerpo = decodeURIComponent((r.href.split('body=')[1] || ''));
-    comprobar(r.href.startsWith('mailto:apartamentoselsotano@gmail.com?subject=Consulta%20de%20fechas') && r.href.includes('%0D%0A') && !/ /.test(r.href) && cuerpo.startsWith('Hola Manuel, somos 2 adultos y 1 niño con mascota y queremos el Nº 2 del'),
-      'formulario: el mailto lleva asunto y cuerpo bien codificados (CRLF, tildes, «Hola Manuel, … el Nº 2 del …»)');
+    comprobar(r.href.startsWith('mailto:apartamentoselsotano@gmail.com?subject=Consulta%20de%20fechas') && r.href.includes('%0D%0A') && !/ /.test(r.href) && cuerpo.startsWith('Hola, somos 2 adultos y 1 niño con mascota y queremos el Nº 2 del'),
+      'formulario: el mailto lleva asunto y cuerpo bien codificados (CRLF, tildes, «Hola, somos … el Nº 2 del …»)');
     comprobar(/2 noches/.test(r.texto), 'formulario: el mensaje cuenta las noches');
     comprobar(r.wa === true, 'formulario: WhatsApp apagado con "whatsapp": null');
     const cfg = JSON.parse(JSON.stringify(configJson)); cfg.whatsapp = '34657771135'; cfg.segundo_portal = { calle: 'C/ Montesinos, 3' };

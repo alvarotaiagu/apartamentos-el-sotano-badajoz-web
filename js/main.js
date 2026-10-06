@@ -1173,7 +1173,7 @@
       var okFechas = comprobarFechas(true);
       var nombre = form.elements.nombre.value.trim();
       form.elements.nombre.toggleAttribute('aria-invalid', !nombre);
-      err.textContent = nombre ? '' : 'Falta tu nombre, para que Manuel sepa quién escribe.';
+      err.textContent = nombre ? '' : 'Falta tu nombre, para que sepamos quién escribe.';
       if (!okFechas || !nombre) { listo.hidden = true; return; }
       var a = aFecha(llegada.value), b = aFecha(salida.value);
       var noches = Math.round((b - a) / 864e5);
@@ -1185,7 +1185,7 @@
       var cual = apto ? 'el Nº ' + apto : 'un apartamento';
       var mismoAnio = a.getFullYear() === b.getFullYear();
       var lineas = [
-        'Hola Manuel, somos ' + quienes + (mascota ? ' con mascota' : '') + ' y queremos ' + cual + ' del ' + largo(a, !mismoAnio) + ' al ' + largo(b, true) +
+        'Hola, somos ' + quienes + (mascota ? ' con mascota' : '') + ' y queremos ' + cual + ' del ' + largo(a, !mismoAnio) + ' al ' + largo(b, true) +
           ' (' + noches + (noches === 1 ? ' noche' : ' noches') + ').'
       ];
       var msg = form.elements.mensaje.value.trim();
@@ -1243,7 +1243,7 @@
     var ante = $('#fechas .antetitulo'), entrada = $('#fechas .seccion__entrada');
     if (ante) ante.textContent = 'Consultas';
     if (entrada && !$('#fechas .fechas__motor')) {
-      entrada.textContent = '¿Prefieres preguntarnos antes de reservar? Rellena esto y te dejamos escrito el mensaje para Manuel. Lo envías tú, por email o como prefieras, y él te contesta con la disponibilidad y el precio de esas fechas.';
+      entrada.textContent = '¿Prefieres preguntarnos antes de reservar? Rellena esto y te dejamos escrito el mensaje. Lo envías tú, por email o como prefieras, y te contestamos con la disponibilidad y el precio de esas fechas.';
       var p = crear('p', 'fechas__motor');
       var a = crear('a', 'boton boton--almagre', 'Reservar online');
       a.href = url; a.target = '_blank'; a.rel = 'noopener';

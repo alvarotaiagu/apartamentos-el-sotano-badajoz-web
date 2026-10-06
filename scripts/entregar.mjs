@@ -99,6 +99,10 @@ if (/^https:\/\//i.test(String(config.reservas || ''))) {
 
 /* ── 6 · notas internas fuera ── */
 for (const f of ['README.md', 'CREDITOS.md']) fs.rmSync(path.join(destino, f), { force: true });
+/* el comentario de cabecera remite al README (que no viaja) y nombra a Manuel, que prefiere no salir */
+cambiar('index.html',
+  '  Datos reales, provisionales y pendientes para Manuel: README.md.\n  El módulo «La historia» se puede quitar: node scripts/quitar-historia.mjs (receta en el README).\n',
+  '', 'las dos líneas del comentario de cabecera que remiten al README');
 
 /* ── 7 · revisión final ── */
 execFileSync(process.execPath, [path.join(raiz, 'scripts/versionar.mjs'), destino], { stdio: 'ignore' });
