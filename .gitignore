@@ -5,3 +5,7 @@ scripts/fuentes/graduadas/
 screenshots/
 .DS_Store
 Thumbs.db
+
+# Notas internas y herramientas de trabajo: Pages publica todo lo que hay en la rama
+README.md
+scripts/
