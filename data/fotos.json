@@ -195,6 +195,32 @@
    ]
   },
   {
+   "id": "670607962",
+   "grupo": "4",
+   "alt": "Dormitorio del Nº 4 visto desde la ventana: cama doble con cabecero de forja, cama individual y platos en la pared",
+   "w": 3000,
+   "h": 2002,
+   "anchos": [
+    480,
+    960,
+    1440,
+    2000
+   ]
+  },
+  {
+   "id": "670607946",
+   "grupo": "4",
+   "alt": "Pasillo del Nº 4 con platos en la pared, el cuadro de la Venus al fondo y el dormitorio a la derecha",
+   "w": 3000,
+   "h": 2002,
+   "anchos": [
+    480,
+    960,
+    1440,
+    2000
+   ]
+  },
+  {
    "id": "670608229",
    "grupo": "4",
    "alt": "Cocina del Nº 4 con horno, placa, microondas y nevera",
