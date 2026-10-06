@@ -19,6 +19,7 @@
    "id_booking": "1365484701",
    "nombre_booking": "Apartamento de 1 dormitorio",
    "nombre_reserva": "One-Bedroom Apartment",
+   "octorate_room": "873686",
    "m2": 70,
    "dormitorios": 1,
    "camas": [
@@ -50,6 +51,7 @@
    "id_booking": "1365484703",
    "nombre_booking": "Habitación Doble Deluxe con balcón",
    "nombre_reserva": "Estudio doble cama matrimonio",
+   "octorate_room": "873688",
    "m2": 90,
    "dormitorios": 0,
    "camas": [
@@ -88,6 +90,7 @@
    "id_booking": "1365484702",
    "nombre_booking": "Apartamento",
    "nombre_reserva": "Amplio apartamento ideal para familias y grupos",
+   "octorate_room": "873690",
    "m2": 95,
    "dormitorios": 2,
    "camas": [
@@ -120,6 +123,7 @@
    "id_booking": "1365484704",
    "nombre_booking": "Apartamento de 1 dormitorio con terraza",
    "nombre_reserva": "Apartamento con gran terraza privada",
+   "octorate_room": "873692",
    "m2": 80,
    "dormitorios": 1,
    "camas": [

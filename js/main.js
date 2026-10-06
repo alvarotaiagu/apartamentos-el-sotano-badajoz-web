@@ -521,10 +521,32 @@
     var figura = $('#dialogo-figura'), cuenta = $('#dialogo-cuenta'), minis = $('#dialogo-minis');
     var lista = [], i = 0, origen = null, ap = null, fotos = {}, cerrando = false, abierto = false;
 
+    /* La foto nueva entra con un fundido ENCIMA de la anterior (que se queda debajo hasta el final):
+       sin hueco en blanco entre una y otra. Se espera a decode() para no fundir una imagen a medio
+       cargar. Si se pasan fotos deprisa, cada una corta a la anterior (turno) y la última limpia. */
+    var turno = 0;
     function pintar() {
-      var f = fotos[lista[i]];
-      figura.textContent = '';
-      if (f) figura.appendChild(picture(f, '(max-width: 900px) 100vw, 70vw', 'eager'));
+      var f = fotos[lista[i]], t = ++turno;
+      var nueva = f ? picture(f, '(max-width: 900px) 100vw, 70vw', 'eager') : null;
+      if (!nueva || !figura.firstElementChild || !movimiento || !abierto) {
+        figura.textContent = '';
+        if (nueva) figura.appendChild(nueva);
+      } else {
+        nueva.className = 'dialogo__nueva';
+        gsap.set(nueva, { opacity: 0 });
+        figura.appendChild(nueva);
+        var img = nueva.querySelector('img');
+        var decodificada = img && img.decode ? img.decode().catch(function () {}) : Promise.resolve();
+        decodificada.then(function () {
+          if (t !== turno) { if (nueva.parentNode) nueva.parentNode.removeChild(nueva); return; }
+          gsap.to(nueva, { opacity: 1, duration: 0.22, ease: 'power2.out', onComplete: function () {
+            if (t !== turno) return;
+            while (figura.firstElementChild && figura.firstElementChild !== nueva) figura.removeChild(figura.firstElementChild);
+            nueva.className = '';
+            gsap.set(nueva, { clearProps: 'opacity' });
+          } });
+        });
+      }
       cuenta.textContent = 'Foto ' + (i + 1) + ' de ' + lista.length;
       todos('button', minis).forEach(function (b, k) { b.setAttribute('aria-current', k === i ? 'true' : 'false'); });
       var activa = minis.children[i];
@@ -645,19 +667,41 @@
     });
     dlg.addEventListener('click', function (e) { if (e.target === dlg) cerrar(); });
     $('#dialogo-fechas').addEventListener('click', function () {
-      if (/^https:\/\//i.test(String(CONFIG.reservas || ''))) { window.open(CONFIG.reservas, '_blank', 'noopener'); return; }
+      var url = urlReserva(ap);
+      if (url) { window.open(url, '_blank', 'noopener'); return; }
       var n = ap && ap.numero;
       cerrar(true);
       elegirApartamento(n);
     });
-    /* deslizar con el dedo */
-    var x0 = null;
-    figura.addEventListener('pointerdown', function (e) { x0 = e.clientX; });
-    figura.addEventListener('pointerup', function (e) {
-      if (x0 === null) return;
-      var dx = e.clientX - x0; x0 = null;
-      if (Math.abs(dx) > 40) ir(dx < 0 ? 1 : -1);
+    /* deslizar con el dedo: la foto sigue al dedo y, al soltar, pasa (más de 40 px, o un gesto rápido
+       aunque sea corto) o vuelve a su sitio. Con ratón solo cuenta el gesto: arrastrar una foto con el
+       ratón no es lo que nadie espera. La galería da la vuelta, así que no hay bordes que frenar. */
+    var x0 = null, t0 = 0, arrastrada = null;
+    figura.addEventListener('pointerdown', function (e) {
+      x0 = e.clientX; t0 = Date.now();
+      arrastrada = movimiento && e.pointerType !== 'mouse' ? figura.lastElementChild : null;
+      if (arrastrada) gsap.killTweensOf(arrastrada, 'x');
     });
+    figura.addEventListener('pointermove', function (e) {
+      if (x0 === null || !arrastrada) return;
+      var dx = e.clientX - x0;
+      gsap.set(arrastrada, { x: lista.length > 1 ? dx : dx * 0.25 });   /* con una sola foto, cede pero no pasa */
+    });
+    function soltar(e, cancelado) {
+      if (x0 === null) return;
+      var dx = cancelado ? 0 : e.clientX - x0;
+      var rapido = Math.abs(dx) / Math.max(1, Date.now() - t0) > 0.3;   /* px/ms: un golpe de dedo, no un arrastre lento */
+      var pasa = lista.length > 1 && (Math.abs(dx) > 40 || (rapido && Math.abs(dx) > 15));
+      var el = arrastrada; x0 = null; arrastrada = null;
+      if (pasa) {
+        if (el) gsap.to(el, { x: dx < 0 ? '-=60' : '+=60', duration: 0.25, ease: 'power2.out' });   /* la que se va sigue su camino bajo la nueva */
+        ir(dx < 0 ? 1 : -1);
+      } else if (el) {
+        gsap.to(el, { x: 0, duration: 0.25, ease: 'power2.out', clearProps: 'x' });
+      }
+    }
+    figura.addEventListener('pointerup', function (e) { soltar(e, false); });
+    figura.addEventListener('pointercancel', function (e) { soltar(e, true); });
     var api = { abrir: abrir, cerrar: cerrar, get indice() { return i; }, get lista() { return lista.slice(); } };
     API.dialogo = api;
     return api;
@@ -674,6 +718,14 @@
     return s;
   }
   function textoExtra(x) { return typeof x === 'string' ? x : x.texto; }
+  /* El motor de Octorate abre el calendario de un solo apartamento con &room=: quien ya ha elegido
+     no tiene que volver a buscarlo entre los cinco. Sin motor (null), cada botón sigue a su formulario. */
+  function urlReserva(ap) {
+    var url = String(CONFIG.reservas || '');
+    if (!/^https:\/\//i.test(url)) return null;
+    var room = ap && String(ap.octorate_room || '');
+    return /^\d+$/.test(room) ? url + (url.indexOf('?') < 0 ? '?' : '&') + 'room=' + room : url;
+  }
 
   /* ═══════════════ los apartamentos, pintados desde data/apartamentos.json ═══════════════ */
   function elegirApartamento(n) {
@@ -757,7 +809,10 @@
           var bt = crear('button', 'boton boton--linea', 'Consultar fechas');
           bt.type = 'button';
           bt.setAttribute('aria-label', 'Consultar fechas para el apartamento ' + ap.numero);
-          bt.addEventListener('click', function () { elegirApartamento(ap.numero); });
+          bt.addEventListener('click', function () {
+            var url = urlReserva(ap);
+            if (url) window.open(url, '_blank', 'noopener'); else elegirApartamento(ap.numero);
+          });
           c.appendChild(bt);
           cuerpo.appendChild(tr);
         });
@@ -1202,9 +1257,16 @@
       setTimeout(refrescar, 30);
       if (listo.scrollIntoView) listo.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
     });
-    $('#reserva-copiar').addEventListener('click', function () {
+    /* el propio botón confirma donde está mirando quien lo pulsa; el aviso de abajo es para el lector de pantalla */
+    var botonCopiar = $('#reserva-copiar'), rotuloCopiar = botonCopiar.textContent, vueltaCopiar = 0;
+    botonCopiar.addEventListener('click', function () {
       copiar(texto).then(function (ok) {
         estado.textContent = ok ? 'Mensaje copiado. Pégalo donde quieras.' : 'No se ha podido copiar: selecciona el texto y cópialo a mano.';
+        if (!ok) return;
+        botonCopiar.style.minWidth = botonCopiar.offsetWidth + 'px';   /* que no encoja y mueva a su vecino */
+        botonCopiar.textContent = 'Copiado';
+        clearTimeout(vueltaCopiar);
+        vueltaCopiar = setTimeout(function () { botonCopiar.textContent = rotuloCopiar; }, 1600);
       });
     });
   })();

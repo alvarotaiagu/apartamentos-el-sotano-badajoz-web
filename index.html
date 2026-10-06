@@ -34,7 +34,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="preload" href="assets/fuentes/league-gothic-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fuentes/epilogue-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/estilos.css?v=c53c02ff">
+<link rel="stylesheet" href="css/estilos.css?v=342d62a3">
 <link rel="stylesheet" href="css/historia.css?v=ed0085b4" data-modulo="historia">
 <script>
 /* Bloqueante a propósito: la clase de JS (y la densidad de la maqueta) se
@@ -45,6 +45,15 @@
   h.classList.add('con-js');
   /* red de seguridad: si main.js no llega, la cortina se va igual */
   setTimeout(function () { h.classList.add('cortina-fuera'); }, 7000);
+  /* quien vuelve desde el aviso legal o la privacidad ya vio la cortina: no se le repite (ni parpadea mientras llega el JS) */
+  try { if (document.referrer && new URL(document.referrer).origin === location.origin) h.classList.add('cortina-fuera'); } catch (e) {}
+  /* la cortina es para la primera visita: quien vuelve a por la dirección o el teléfono no espera 3 s cada vez.
+     ?cortina la fuerza (para enseñarla). Sin localStorage se ve siempre, que es lo seguro. */
+  try {
+    if (/[?&]cortina\b/.test(location.search)) {}
+    else if (localStorage.getItem('elsotano-cortina') === 'vista') h.classList.add('cortina-fuera');
+    else localStorage.setItem('elsotano-cortina', 'vista');
+  } catch (e) {}
   /* [ELEGIR HERO] por defecto, los tres marcos; ?hero=carrusel enseña la versión del carrusel de fotos */
   if (/[?&]hero=carrusel\b/.test(location.search)) h.classList.add('hero-carrusel');
   /* [MANDO DE MAQUETA] la densidad guardada y los avisos [VERIFICAR] solo cuentan en modo revisión (?revision) */
@@ -692,7 +701,7 @@
 <script src="assets/vendor/gsap.min.js"></script>
 <script src="assets/vendor/ScrollTrigger.min.js"></script>
 <script src="assets/vendor/lenis.min.js"></script>
-<script src="js/main.js?v=45c014cf"></script>
-<script src="js/historia.js?v=d8e4ed46" data-modulo="historia"></script>
+<script src="js/main.js?v=f2afa34b"></script>
+<script src="js/historia.js?v=f84c3900" data-modulo="historia"></script>
 </body>
 </html>
