@@ -116,6 +116,21 @@ const prohibido = [
 for (const [f, re, que] of prohibido) if (re.test(leer(f))) bloqueos.push(`${f}: ${que}`);
 const pisos = JSON.parse(leer('data/apartamentos.json')).apartamentos || [];
 if (pisos.some(p => p.provisional)) bloqueos.push('data/apartamentos.json: los apartamentos siguen "provisional": true (¿cuántos son y cómo se llaman?)');
+/* quitar-mando borra los avisos [VERIFICAR] de la copia: sin esta comprobación, lo que aún no ha
+   confirmado Manuel saldría publicado como si fuera cierto. Se miran en la MAQUETA (la fuente). */
+const fuente = fs.readFileSync(path.join(raiz, 'index.html'), 'utf8');
+const sinConfirmar = [...fuente.matchAll(/([^<>]{3,90}?)\s*<span class="verificar"[^>]*>\[VERIFICAR\]<\/span>/g)].map(m => m[1].trim());
+const totalAvisos = (fuente.match(/class="verificar"/g) || []).length;
+const marcasJson = [];
+(function buscar(x) {
+  if (Array.isArray(x)) return x.forEach(buscar);
+  if (x && typeof x === 'object') for (const [k, v] of Object.entries(x)) { if (k === 'verificar' && v && v !== false) marcasJson.push(typeof v === 'string' ? v : (x.texto || 'una marca verificar')); else buscar(v); }
+})(JSON.parse(leer('data/apartamentos.json')));
+if (totalAvisos || marcasJson.length) {
+  bloqueos.push(`${totalAvisos} aviso(s) [VERIFICAR] en index.html y ${marcasJson.length} marca(s) en apartamentos.json sin resolver: esta copia los quita y se verían como ciertos. ` +
+    'Resolver = confirmar con Manuel y borrar la marca en la maqueta (o quitar la frase). Pendientes: ' +
+    [...sinConfirmar.map(t => '«' + t + '»'), ...marcasJson.map(t => '«' + t + '»')].join(' · '));
+}
 if (config.segundo_portal === null) aviso.push('data/config.json: "segundo_portal" es null → solo sale el portal del nº 6 (¿Montesinos 3 es otro portal?)');
 if (config.whatsapp === null) aviso.push('data/config.json: "whatsapp" es null → el botón de WhatsApp sigue apagado');
 

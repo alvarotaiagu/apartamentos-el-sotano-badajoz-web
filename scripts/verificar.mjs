@@ -761,10 +761,14 @@ try {
     comprobar(!fs.existsSync(path.join(dest, 'README.md')) && !fs.existsSync(path.join(dest, 'CREDITOS.md')) && !fs.existsSync(path.join(dest, 'scripts')),
       'entrega: sin README, créditos ni scripts');
     comprobar(!/jsdelivr|cdnjs/i.test(idx), 'entrega: ninguna librería sale de un CDN');
-    /* mientras falten titular/NIF y los apartamentos sean provisionales, NO debe dar luz verde */
-    const sinDatos = !configJson.titular || !configJson.nif;
-    comprobar(sinDatos ? (codigo === 1 && /BLOQUEA/.test(salida) && !/Lista para publicar/.test(salida)) : true,
-      'entrega: sin titular/NIF el informe bloquea y no dice «Lista para publicar»');
+    /* mientras falten titular/NIF, los apartamentos sean provisionales o quede un [VERIFICAR] en la
+       maqueta (que la copia borra), NO debe dar luz verde */
+    const html0 = fs.readFileSync(path.join(raiz, 'index.html'), 'utf8');
+    const hayPendiente = !configJson.titular || !configJson.nif || pisosJson.apartamentos.some(p => p.provisional) || /class="verificar"/.test(html0);
+    comprobar(!hayPendiente || (codigo === 1 && /BLOQUEA/.test(salida) && !/Lista para publicar/.test(salida)),
+      'entrega: con datos pendientes el informe bloquea y no dice «Lista para publicar»');
+    comprobar(!/class="verificar"/.test(html0) || /\[VERIFICAR\]/.test(salida),
+      'entrega: los [VERIFICAR] sin resolver salen en el informe (la copia los borra, no pueden pasar en silencio)');
     fs.rmSync(dest, { recursive: true, force: true });
   }
 
