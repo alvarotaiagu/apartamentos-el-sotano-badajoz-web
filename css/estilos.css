@@ -445,6 +445,7 @@ html.con-movimiento .radar:not(.es-hecho) .punto:not(.es-encendido) { opacity: 0
 .opiniones { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(2.4rem, 6vw, 6rem); align-items: start; }
 .nota-grande { font: 400 clamp(7rem, 12vw, 10.5rem)/.88 var(--tipo-rotulo); color: var(--acento-texto); }
 .nota-sub { margin-top: .9rem; font-size: .95rem; }
+.nota-fecha { margin-top: .5rem; font-size: .8rem; }
 .categorias { margin-top: 2.2rem; display: grid; gap: .1rem; }
 .categorias li { display: grid; grid-template-columns: 8.2rem minmax(0, 1fr) 2.2rem; align-items: center; gap: .9rem; padding: .4rem 0; font-size: .88rem; }
 .categorias b { font: 400 1.3rem/1 var(--tipo-rotulo); text-align: right; }

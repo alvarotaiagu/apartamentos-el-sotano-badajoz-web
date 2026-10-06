@@ -23,6 +23,45 @@ node scripts/verificar.mjs --capturas   → 131 comprobaciones + screenshots/
 
 ---
 
+## Antes de salir a producción (checklist, actualizado el 6-10-2026)
+
+`node scripts/entregar.mjs --dominio apartamentoselsotano.es` dice «Lista para publicar» solo cuando los bloqueantes (B) están resueltos. Los demás no los comprueba el script.
+
+**Datos de Manuel**
+- [ ] **B · Quinto apartamento** (larga duración): nombre o número, m², camas, fotos, y cómo se enseña. Necesita un campo nuevo en `data/apartamentos.json` (p. ej. `"larga_duracion": true`) y cambio de código: tarjeta sin botón de reservar, fuera del formulario, dentro del «cinco apartamentos».
+- [ ] **B · Quitar `"provisional": true`** de los apartamentos (cuántos son y cómo se llaman; los «Nº 1-4» son nuestros).
+- [ ] **B · Cinco avisos `[VERIFICAR]`**: silla de ruedas (¿en qué apartamentos?), «La barra» (¿es la del restaurante y está en el Nº 2?) y el patio (¿solo del Nº 2?). Se resuelven confirmando y borrando la marca en la maqueta.
+- [ ] Qué apartamentos entran por cada portal (2 y 3) y confirmar que el otro portal es Montesinos 3.
+- [ ] Número de registro (y licencia) de cada apartamento/portal; si el de larga duración queda fuera del uso turístico. Comprobar en el texto oficial si el número debe mostrarse en la publicidad.
+- [ ] Quién gestiona el DNS y si el dominio ya tiene correo (MX) o una web que no se pueda romper.
+- [ ] Confirmar «Parking San Atón» y que la tarifa especial se reserva con ellos (¿cómo? teléfono, email).
+- [ ] WhatsApp del 657 77 11 35 (`"whatsapp"` en `data/config.json`).
+- [ ] Permiso de Manuel para citar las 9 opiniones de Booking y, si quiere, con nombre de pila. Revisar si los términos de Booking permiten reutilizarlas.
+- [ ] Enlace de la ficha de Google (Place ID) para que «5,0 en Google» lleve a sus reseñas.
+- [ ] Logo en vector (AI/SVG), si lo encuentra. Mientras tanto vale el nuestro, ajustado al PDF de Canva el 6-10-2026.
+- [ ] Restaurante: ¿nº 6 o nº 8? Fotos antiguas solo con permiso de su autor (blog: Ángel Manuel Vaca Arévalo). Hechos del blog (1933, gaseosas, guía Campsa) solo si Manuel confirma que es el mismo local.
+- [ ] Manuel: ¿sale con nombre o foto? ¿Portugués (`/pt/`) en una segunda fase?
+
+**Dominio y publicación (después de los datos)**
+- [ ] Generar la copia: `entregar.mjs --dominio apartamentoselsotano.es --destino ../el-sotano-entrega`.
+- [ ] Repo del cliente (decidir de quién es la cuenta de GitHub) y publicar esa copia, no esta carpeta.
+- [ ] DNS: 4 registros A de GitHub Pages en el apex y CNAME de `www` (contrastar IPs con la documentación de GitHub), sin tocar los MX. Activar «Enforce HTTPS».
+- [ ] Octorate: comprobar que su «sitio web oficial» apunta al dominio (ya lista apartamentoselsotano.es).
+- [ ] Reserva de prueba de punta a punta desde la web ya publicada.
+
+**Calidad que aún no se ha medido**
+- [ ] Lighthouse y axe sobre la copia final.
+- [ ] Safari / iPhone reales (`verificar.mjs` solo usa Chromium de escritorio).
+- [ ] Test conocido que falla desde antes: «fotos: 24 imágenes cargadas» (el test pide más de 25; no hay ninguna rota).
+
+**Después de salir**
+- [ ] Ficha de Google Business: poner la web (necesita acceso de Manuel) y alta en Search Console con el sitemap.
+- [ ] Factura a Doble M Gestión de Espacios y Eventos SLL: 400 € + 21 % IVA = 484 €; acordar forma de pago.
+- [ ] Acordar el alcance de cambios futuros y quién renueva el dominio.
+- [ ] Opcional: Umami para medir visitas; versión en portugués.
+
+**Las cifras de opiniones no caducan** (decidido el 6-10-2026): los comentarios van como «más de 280» (solo puede crecer) y las puntuaciones de Booking y de Google llevan «a octubre de 2026» (`.nota-fecha` en Opiniones y `.cifras__fuente` en La casa). Una foto fechada nunca es falsa; actualizar solo es cosmético, una vez al año como mucho, y lo que hay que tocar son las notas en `index.html` y esas dos fechas.
+
 ## Pendientes para Manuel
 
 **Respondido el 6-10-2026 por WhatsApp** (la lista de abajo conserva el texto original; lo de aquí manda):
