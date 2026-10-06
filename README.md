@@ -19,7 +19,7 @@ node scripts/verificar.mjs --capturas   → 131 comprobaciones + screenshots/
 - **La versión 1 sigue disponible con `?hero=carrusel`:** carrusel de tres fotos de la casa (el patio, la vidriera y el patio entero). Oculta, no descarga sus fotos.
 - Por qué se cambió el hero: las estancias, con gran angular y en marco vertical, se quedaban en el sofá y el techo. Con fotos de anfitrión, el hero va con las de la casa (patio, puerta, detalles) y las estancias en sus tarjetas.
 - Si la 1 se descarta del todo, borrar lo marcado `[ELEGIR HERO]` que es suyo: en `index.html`, la `<figure class="hero__foto">` y la línea `hero=carrusel` del script del `<head>`; en `css/estilos.css`, las reglas `.hero__foto`, `.hero__img` y `hero-carrusel`; en `js/main.js`, la parte del carrusel de `hero()`; y en `verificar.mjs`, su prueba.
-- Las fotos principales de las tarjetas se cambiaron por las que mejor aguantan el 4:3: Nº 1 el salón con la lámpara (650532143), Nº 2 el comedor con el sofá azul (670608660) y Nº 3 la cocina y el comedor (657883547). En el JSON, la primera foto de cada apartamento es la principal.
+- Las fotos principales de las tarjetas se cambiaron por las que mejor aguantan el 4:3: el 1, el salón con la lámpara (650532143); el 2, la cocina y el comedor (657883547), y el 4, el comedor con el sofá azul (670608660). En el JSON, la primera foto de cada apartamento es la principal.
 
 ---
 
@@ -28,11 +28,11 @@ node scripts/verificar.mjs --capturas   → 131 comprobaciones + screenshots/
 `node scripts/entregar.mjs --dominio apartamentoselsotano.es` dice «Lista para publicar» solo cuando los bloqueantes (B) están resueltos. Los demás no los comprueba el script.
 
 **Datos de Manuel**
-- [ ] **B · Quinto apartamento** (larga duración): nombre o número, m², camas, fotos, y cómo se enseña. Necesita un campo nuevo en `data/apartamentos.json` (p. ej. `"larga_duracion": true`) y cambio de código: tarjeta sin botón de reservar, fuera del formulario, dentro del «cinco apartamentos».
-- [ ] **B · Quitar `"provisional": true`** de los apartamentos (cuántos son y cómo se llaman; los «Nº 1-4» son nuestros).
-- [ ] **B · Cinco avisos `[VERIFICAR]`**: silla de ruedas (¿en qué apartamentos?), «La barra» (¿es la del restaurante y está en el Nº 2?) y el patio (¿solo del Nº 2?). Se resuelven confirmando y borrando la marca en la maqueta.
-- [ ] Qué apartamentos entran por cada portal (2 y 3) y confirmar que el otro portal es Montesinos 3.
-- [ ] Número de registro (y licencia) de cada apartamento/portal; si el de larga duración queda fuera del uso turístico. Comprobar en el texto oficial si el número debe mostrarse en la publicidad.
+- [ ] **B · Apartamento 5**: Manuel quiere que salga como uno más (~120 m², 2 dormitorios, 6 camas; en Octorate ya es reservable como «Apartamento 5», 4 huéspedes + 1 bebé, solo con la foto de la fachada). Faltan sus fotos, que manda Manuel. `entregar.mjs` bloquea mientras haya menos apartamentos que `"apartamentos_esperados"` en `data/config.json`.
+- [x] ~~Quitar `"provisional": true`~~: hecho el 6-10-2026 con la numeración de Manuel, que coincide con los m² y el orden de Octorate (1 = 70 m², 2 = 90, 3 = 95, 4 = 80).
+- [ ] **B · Un aviso `[VERIFICAR]`**: «La barra» del antiguo restaurante, en el apartamento 2 (falta saber qué mueble es y una foto). La silla de ruedas (el 2) y el patio (el 4) ya están resueltos.
+- [x] ~~Portales~~: 1 y 2 entran por C/ Virgen de la Soledad, 6; 3, 4 y 5 por C/ Montesinos, 3.
+- [x] ~~Número de registro~~: el mismo para todos (AT-BA-00367). Comprobar en el texto oficial si el número debe mostrarse en la publicidad.
 - [ ] Quién gestiona el DNS y si el dominio ya tiene correo (MX) o una web que no se pueda romper.
 - [ ] Confirmar «Parking San Atón» y que la tarifa especial se reserva con ellos (¿cómo? teléfono, email).
 - [ ] WhatsApp del 657 77 11 35 (`"whatsapp"` en `data/config.json`).
@@ -69,7 +69,7 @@ node scripts/verificar.mjs --capturas   → 131 comprobaciones + screenshots/
 - **Dominio:** `apartamentoselsotano.es`, ya comprado por ellos. Falta saber quién gestiona el DNS.
 - **Reservas:** motor de Octorate (enlace directo, `codice=906956`, ya en `"reservas"`). Descartado el widget `form.js`: carga 4 hosts de terceros por visita y sale en inglés.
 - **Son 5 apartamentos**, uno ocupado de larga duración que también debe salir. **Faltan sus datos** (nombre o número, m², camas, fotos) y cómo mostrarlo.
-- **Dos accesos:** 2 apartamentos por uno y 3 por el otro. Puesto Montesinos 3 como segundo portal (a confirmar que es ese). **Falta qué apartamentos entran por cada uno.**
+- **Dos accesos** (segunda respuesta, 6-10-2026): el 1 y el 2 por C/ Virgen de la Soledad, 6; el 3, el 4 y el 5 por C/ Montesinos, 3. Adaptado a silla de ruedas, el 2; el patio, del 4.
 - **Aparcamiento:** gratuito más cercano, «Aparcamiento Alcazaba», a unos 8 min andando; tarifa especial en el «Parking San Atón» reservando con ellos. Ya en la web (confirmar cómo se escribe «San Atón»).
 - **Ropa de cama y toallas:** todo incluido, sin coste. Ya correcto en la web.
 - **Fotos de Booking:** puede usarlas, sin problema (por WhatsApp).
@@ -101,8 +101,8 @@ node scripts/verificar.mjs --capturas   → 131 comprobaciones + screenshots/
 | Nombre, dirección del nº 6, teléfono, email, Instagram | **Real** | Logo, fachada, Booking, Google, Instagram |
 | Licencia AT-BA-00367 y registro único | **Real** | Booking, placa «AT» |
 | Los apartamentos: m², camas, terraza, balcón | **Real**, de Booking | Booking |
-| **Números «Nº 1-4» y la lista de apartamentos** | **Provisional** (`"provisional": true` en el JSON; el mando lo avisa) | Nuestros |
-| **Dirección**: Virgen de la Soledad 6 o Montesinos 3 | **Provisional**: sin resolver | Booking/fachada contra Google |
+| Números 1-4 de los apartamentos | **Real**: los de Manuel (6-10-2026), con los m² de Octorate. Falta el 5 | Manuel, Octorate |
+| **Dirección**: dos portales, Virgen de la Soledad 6 (1 y 2) y Montesinos 3 (3, 4 y 5) | **Real** | Manuel |
 | **La barra del antiguo restaurante** | **Sin confirmar** (`[VERIFICAR]` con `?revision`) | Su texto de Booking + la foto |
 | **Accesibilidad** (WC elevado con barras, lavamanos bajo) | **Real según Booking**, sin saber en qué apartamentos (`[VERIFICAR]`) | Booking |
 | Equipamiento común, normas y horarios | **Real** | Booking |
@@ -197,7 +197,7 @@ Los datos que lo desbloquean viven en `data/config.json`:
 | `domicilio_fiscal` | solo si no es el del alojamiento | aviso legal |
 | `whatsapp`, `segundo_portal` | ver «Pendientes para Manuel» | no bloquean; avisan |
 
-Además bloquea mientras `data/apartamentos.json` siga con `"provisional": true`: hay que confirmar con Manuel cuántos son y cómo se llaman. Las librerías (GSAP, ScrollTrigger, Lenis) están en `assets/vendor/`, ya no por CDN. Después de entregar: `node scripts/verificar.mjs` sobre la maqueta, publicar la copia en el repo del cliente con el dominio ya apuntado y activar HTTPS en GitHub Pages.
+Además bloquea mientras algún apartamento de `data/apartamentos.json` siga con `"provisional": true` o haya menos que `"apartamentos_esperados"` en `data/config.json`. Las librerías (GSAP, ScrollTrigger, Lenis) están en `assets/vendor/`, ya no por CDN. Después de entregar: `node scripts/verificar.mjs` sobre la maqueta, publicar la copia en el repo del cliente con el dominio ya apuntado y activar HTTPS en GitHub Pages.
 
 ## Quitar el mando de maqueta
 
@@ -279,7 +279,7 @@ Tras tocar CSS o JS: `node scripts/versionar.mjs`. Usa `sharp` y `playwright` de
 
 ## Decisiones
 
-- **El patio va sin dueño.** Las cuatro fotos del patio (incluida la 670608170 que Booking cuelga del Nº 2) son el mismo patio, y no se puede saber si es solo del Nº 2. En las secciones generales va como «el patio». En el Nº 2, «Terraza-patio» lleva `[VERIFICAR]`.
+- **El patio es del apartamento 4** (Manuel, 6-10-2026; Octorate lo lista como «Patio privado» de ese apartamento). Las cuatro fotos del patio son el mismo patio. En las secciones generales sigue como «el patio», sin decir de quién: si se ve que confunde a quien reserva otro apartamento, decir en el pie que es del 4.
 - **Una sola sección** tiene el id del logo: la sección de apartamentos es `#los-apartamentos`, porque `#apartamentos` es la capa «APARTAMENTOS» del logo (el encargo pide las capas `#letras`, `#sombra` y `#apartamentos`).
 - **«Una sola vez al entrar» con IntersectionObserver** (umbral 0, sobre el bloque), no con `ScrollTrigger once`: el PLIEGO §6 recoge que `once` no dispara si el elemento ya está en pantalla. ScrollTrigger queda para el paralaje.
 - **Las citas pasan solas** despacio. Siguiendo el patrón de carrusel accesible, mientras pasan solas el `aria-live` está en `off`. Al tocarlas (botón, clic o flechas) se paran y pasan a `polite`. Hay botón de pausa. Con movimiento reducido no pasan solas.

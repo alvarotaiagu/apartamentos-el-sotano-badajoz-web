@@ -1306,7 +1306,6 @@
     promesaPisos.then(function (d) { if (d.provisional || d.apartamentos.some(function (a) { return a.provisional; })) aviso('pisos', 'Apartamentos provisionales: números y nombres, pendiente de Manuel'); }).catch(function () {});
     promesaConfig.then(function (c) { if (!c.segundo_portal) aviso('portales', 'Dos direcciones: pendiente de Manuel'); });
     aviso('barra', 'La barra del antiguo restaurante: sin confirmar');
-    aviso('silla', 'Accesibilidad: falta saber qué apartamentos están adaptados');
     API.mando = { aplicar: aplicar };
   })();
   /* ═══════════ fin del bloque [MANDO DE MAQUETA] ═══════════ */

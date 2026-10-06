@@ -1,7 +1,6 @@
 {
- "provisional": true,
- "aviso": "Apartamentos provisionales: números y nombres pendientes de Manuel (Booking enseña 4; la bio de Instagram dice «cinco»)",
- "fuente": "Ficha de Booking «apartamentos-el-sotano», leída el 2026-10-02. Los «Nº» son nuestros, no suyos.",
+ "provisional": false,
+ "fuente": "Numeración de Manuel (WhatsApp, 6-10-2026), confirmada con los m² del motor de Octorate (70, 90, 95 y 80). Datos de camas y equipamiento: ficha de Booking leída el 2-10-2026. Falta el apartamento 5.",
  "comunes": [
   "Cocina completa: placa, horno, microondas, nevera, cafetera y tostadora",
   "Lavadora",
@@ -27,6 +26,7 @@
    ],
    "camas_resumen": "2 camas individuales y sofá cama",
    "extras": [
+    "Entrada por C/ Virgen de la Soledad, 6",
     "Comedor con panelado de madera",
     "Suelo de madera"
    ],
@@ -42,11 +42,78 @@
     "650532157",
     "650532150",
     "650532160"
-   ],
-   "provisional": true
+   ]
   },
   {
    "numero": 2,
+   "id_booking": "1365484703",
+   "nombre_booking": "Habitación Doble Deluxe con balcón",
+   "m2": 90,
+   "dormitorios": 0,
+   "camas": [
+    "Planta abierta: 1 cama"
+   ],
+   "camas_resumen": "1 cama, en planta abierta",
+   "extras": [
+    "Entrada por C/ Virgen de la Soledad, 6",
+    "Planta abierta",
+    "Celosía de listones",
+    "Balcón",
+    "Entrada propia",
+    "Adaptado a silla de ruedas",
+    {
+     "texto": "La barra del antiguo restaurante",
+     "verificar": "Confirmar con Manuel qué mueble es la barra (está en el apartamento 2) y pedirle una foto"
+    }
+   ],
+   "terraza": false,
+   "balcon": true,
+   "lavadora": true,
+   "fotos": [
+    "657883547",
+    "657883542",
+    "657883551",
+    "657883538",
+    "657883584",
+    "657883559",
+    "657883554",
+    "657883564",
+    "657883574"
+   ]
+  },
+  {
+   "numero": 3,
+   "id_booking": "1365484702",
+   "nombre_booking": "Apartamento",
+   "m2": 95,
+   "dormitorios": 2,
+   "camas": [
+    "Dormitorio 1: 2 camas individuales y 1 cama doble",
+    "Dormitorio 2: 3 camas individuales"
+   ],
+   "camas_resumen": "Dos dormitorios: cama doble y 5 individuales",
+   "extras": [
+    "Entrada por C/ Montesinos, 3",
+    "Balcón y terraza",
+    "Mesa ovalada con lámpara de araña",
+    "Dos dormitorios"
+   ],
+   "terraza": true,
+   "balcon": true,
+   "lavadora": true,
+   "fotos": [
+    "651585137",
+    "651585140",
+    "651585159",
+    "651585167",
+    "651584991",
+    "651585181",
+    "651585144",
+    "651585149"
+   ]
+  },
+  {
+   "numero": 4,
    "id_booking": "1365484704",
    "nombre_booking": "Apartamento de 1 dormitorio con terraza",
    "m2": 80,
@@ -57,14 +124,8 @@
    ],
    "camas_resumen": "Cama doble, cama individual y sofá cama",
    "extras": [
-    {
-     "texto": "Terraza-patio",
-     "verificar": "¿El patio de las fotos es solo del Nº 2 o es de toda la casa?"
-    },
-    {
-     "texto": "La barra del antiguo restaurante",
-     "verificar": "Confirmar con Manuel que el mueble largo del salón es la barra del restaurante"
-    },
+    "Entrada por C/ Montesinos, 3",
+    "Terraza-patio",
     "La puerta de la vidriera",
     "Suelo de barro"
    ],
@@ -85,71 +146,7 @@
     "670608074",
     "670608106",
     "670608170"
-   ],
-   "provisional": true
-  },
-  {
-   "numero": 3,
-   "id_booking": "1365484703",
-   "nombre_booking": "Habitación Doble Deluxe con balcón",
-   "m2": 90,
-   "dormitorios": 0,
-   "camas": [
-    "Planta abierta: 1 cama"
-   ],
-   "camas_resumen": "1 cama, en planta abierta",
-   "extras": [
-    "Planta abierta",
-    "Celosía de listones",
-    "Balcón",
-    "Entrada propia"
-   ],
-   "terraza": false,
-   "balcon": true,
-   "lavadora": true,
-   "fotos": [
-    "657883547",
-    "657883542",
-    "657883551",
-    "657883538",
-    "657883584",
-    "657883559",
-    "657883554",
-    "657883564",
-    "657883574"
-   ],
-   "provisional": true
-  },
-  {
-   "numero": 4,
-   "id_booking": "1365484702",
-   "nombre_booking": "Apartamento",
-   "m2": 95,
-   "dormitorios": 2,
-   "camas": [
-    "Dormitorio 1: 2 camas individuales y 1 cama doble",
-    "Dormitorio 2: 3 camas individuales"
-   ],
-   "camas_resumen": "Dos dormitorios: cama doble y 5 individuales",
-   "extras": [
-    "Balcón y terraza",
-    "Mesa ovalada con lámpara de araña",
-    "Dos dormitorios"
-   ],
-   "terraza": true,
-   "balcon": true,
-   "lavadora": true,
-   "fotos": [
-    "651585137",
-    "651585140",
-    "651585159",
-    "651585167",
-    "651584991",
-    "651585181",
-    "651585144",
-    "651585149"
-   ],
-   "provisional": true
+   ]
   }
  ]
 }

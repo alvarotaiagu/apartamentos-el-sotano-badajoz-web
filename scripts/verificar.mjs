@@ -869,8 +869,8 @@ try {
     await page.click('#cookies-aceptar'); await page.waitForTimeout(500);
     const r0 = await page.evaluate(() => ({ vis: getComputedStyle(document.getElementById('mando')).visibility, avisos: [...document.querySelectorAll('#mando-avisos li')].map(l => l.textContent), verif: [...document.querySelectorAll('.verificar')].filter(v => getComputedStyle(v).display !== 'none').length }));
     comprobar(conCookies === 'hidden' && r0.vis === 'visible', 'mando: se aparta mientras está el aviso de cookies y aparece al cerrarlo');
-    comprobar(r0.avisos.length === 4 && r0.avisos.some(a => /provisionales/.test(a)) && r0.avisos.some(a => a === 'Dos direcciones: pendiente de Manuel') && r0.avisos.some(a => /barra/.test(a)) && r0.avisos.some(a => /Accesibilidad/.test(a)), 'mando: enseña los avisos pendientes (' + r0.avisos.join(' · ') + ')');
-    comprobar(r0.verif >= 3, 'revisión: los [VERIFICAR] (barra, accesibilidad) se ven con ?revision (' + r0.verif + ')');
+    comprobar(r0.avisos.length === 2 && r0.avisos.some(a => a === 'Dos direcciones: pendiente de Manuel') && r0.avisos.some(a => /barra/.test(a)), 'mando: enseña los avisos pendientes (' + r0.avisos.join(' · ') + ')');
+    comprobar(r0.verif >= 1, 'revisión: los [VERIFICAR] que quedan (la barra) se ven con ?revision (' + r0.verif + ')');
     if (conCapturas) await page.screenshot({ path: foto('densidad-listones-1440.png') });
     await page.click('[data-densidad="sobria"]'); await page.waitForTimeout(1200);
     const s = await page.evaluate(() => ({

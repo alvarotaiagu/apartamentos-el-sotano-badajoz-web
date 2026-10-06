@@ -119,6 +119,7 @@ const prohibido = [
 ];
 for (const [f, re, que] of prohibido) if (re.test(leer(f))) bloqueos.push(`${f}: ${que}`);
 const pisos = JSON.parse(leer('data/apartamentos.json')).apartamentos || [];
+if (config.apartamentos_esperados && pisos.length < config.apartamentos_esperados) bloqueos.push(`data/apartamentos.json: hay ${pisos.length} apartamentos y Manuel dice que son ${config.apartamentos_esperados} (falta añadir el que queda, con sus fotos)`);
 if (pisos.some(p => p.provisional)) bloqueos.push('data/apartamentos.json: los apartamentos siguen "provisional": true (¿cuántos son y cómo se llaman?)');
 /* quitar-mando borra los avisos [VERIFICAR] de la copia: sin esta comprobación, lo que aún no ha
    confirmado Manuel saldría publicado como si fuera cierto. Se miran en la MAQUETA (la fuente). */
