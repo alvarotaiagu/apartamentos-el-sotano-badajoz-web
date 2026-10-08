@@ -1,7 +1,6 @@
 {
- "provisional": true,
- "aviso": "Apartamentos provisionales: números y nombres pendientes de Manuel (Booking enseña 4; la bio de Instagram dice «cinco»)",
- "fuente": "Ficha de Booking «apartamentos-el-sotano», leída el 2026-10-02. Los «Nº» son nuestros, no suyos.",
+ "provisional": false,
+ "fuente": "Numeración de Manuel (WhatsApp, 6-10-2026), confirmada con los m² del motor de Octorate (70, 90, 95 y 80). Datos de camas y equipamiento: ficha de Booking leída el 2-10-2026; la cama de matrimonio del 2 y los nombres «nombre_reserva», del motor de Octorate (6-10-2026). Falta el apartamento 5.",
  "comunes": [
   "Cocina completa: placa, horno, microondas, nevera, cafetera y tostadora",
   "Lavadora",
@@ -19,6 +18,8 @@
    "numero": 1,
    "id_booking": "1365484701",
    "nombre_booking": "Apartamento de 1 dormitorio",
+   "nombre_reserva": "One-Bedroom Apartment",
+   "octorate_room": "873686",
    "m2": 70,
    "dormitorios": 1,
    "camas": [
@@ -28,7 +29,8 @@
    "camas_resumen": "2 camas individuales y sofá cama",
    "extras": [
     "Comedor con panelado de madera",
-    "Suelo de madera"
+    "Suelo de madera",
+    "Entrada por C/ Virgen de la Soledad, 6"
    ],
    "terraza": false,
    "balcon": false,
@@ -42,67 +44,31 @@
     "650532157",
     "650532150",
     "650532160"
-   ],
-   "provisional": true
+   ]
   },
   {
    "numero": 2,
-   "id_booking": "1365484704",
-   "nombre_booking": "Apartamento de 1 dormitorio con terraza",
-   "m2": 80,
-   "dormitorios": 1,
-   "camas": [
-    "Dormitorio: 1 cama individual y 1 cama doble",
-    "Salón: 1 sofá cama"
-   ],
-   "camas_resumen": "Cama doble, cama individual y sofá cama",
-   "extras": [
-    {
-     "texto": "Terraza-patio",
-     "verificar": "¿El patio de las fotos es solo del Nº 2 o es de toda la casa?"
-    },
-    {
-     "texto": "La barra del antiguo restaurante",
-     "verificar": "Confirmar con Manuel que el mueble largo del salón es la barra del restaurante"
-    },
-    "La puerta de la vidriera",
-    "Suelo de barro"
-   ],
-   "terraza": true,
-   "balcon": false,
-   "lavadora": true,
-   "fotos": [
-    "670608660",
-    "670608186",
-    "670608668",
-    "670608208",
-    "670608312",
-    "670608339",
-    "670607988",
-    "670608229",
-    "670608256",
-    "670608284",
-    "670608074",
-    "670608106",
-    "670608170"
-   ],
-   "provisional": true
-  },
-  {
-   "numero": 3,
    "id_booking": "1365484703",
    "nombre_booking": "Habitación Doble Deluxe con balcón",
+   "nombre_reserva": "Estudio doble cama matrimonio",
+   "octorate_room": "873688",
    "m2": 90,
    "dormitorios": 0,
    "camas": [
-    "Planta abierta: 1 cama"
+    "Planta abierta: 1 cama de matrimonio"
    ],
-   "camas_resumen": "1 cama, en planta abierta",
+   "camas_resumen": "Cama de matrimonio, en planta abierta",
    "extras": [
+    "Adaptado a silla de ruedas",
+    "Balcón",
     "Planta abierta",
     "Celosía de listones",
-    "Balcón",
-    "Entrada propia"
+    "Entrada propia",
+    {
+     "texto": "La barra del antiguo restaurante",
+     "verificar": "Confirmar con Manuel qué mueble es la barra (está en el apartamento 2) y pedirle una foto"
+    },
+    "Entrada por C/ Virgen de la Soledad, 6"
    ],
    "terraza": false,
    "balcon": true,
@@ -117,13 +83,14 @@
     "657883554",
     "657883564",
     "657883574"
-   ],
-   "provisional": true
+   ]
   },
   {
-   "numero": 4,
+   "numero": 3,
    "id_booking": "1365484702",
    "nombre_booking": "Apartamento",
+   "nombre_reserva": "Amplio apartamento ideal para familias y grupos",
+   "octorate_room": "873690",
    "m2": 95,
    "dormitorios": 2,
    "camas": [
@@ -132,9 +99,10 @@
    ],
    "camas_resumen": "Dos dormitorios: cama doble y 5 individuales",
    "extras": [
+    "Dos dormitorios",
     "Balcón y terraza",
     "Mesa ovalada con lámpara de araña",
-    "Dos dormitorios"
+    "Entrada por C/ Montesinos, 3"
    ],
    "terraza": true,
    "balcon": true,
@@ -148,8 +116,47 @@
     "651585181",
     "651585144",
     "651585149"
+   ]
+  },
+  {
+   "numero": 4,
+   "id_booking": "1365484704",
+   "nombre_booking": "Apartamento de 1 dormitorio con terraza",
+   "nombre_reserva": "Apartamento con gran terraza privada",
+   "octorate_room": "873692",
+   "m2": 80,
+   "dormitorios": 1,
+   "camas": [
+    "Dormitorio: 1 cama individual y 1 cama doble",
+    "Salón: 1 sofá cama"
    ],
-   "provisional": true
+   "camas_resumen": "Cama doble, cama individual y sofá cama",
+   "extras": [
+    "Terraza-patio",
+    "La puerta de la vidriera",
+    "Suelo de barro",
+    "Entrada por C/ Montesinos, 3"
+   ],
+   "terraza": true,
+   "balcon": false,
+   "lavadora": true,
+   "fotos": [
+    "670608660",
+    "670608186",
+    "670608668",
+    "670608208",
+    "670608312",
+    "670608339",
+    "670607988",
+    "670607962",
+    "670607946",
+    "670608229",
+    "670608256",
+    "670608284",
+    "670608074",
+    "670608106",
+    "670608170"
+   ]
   }
  ]
 }

@@ -34,7 +34,7 @@
   /* lo mismo que data/config.json, por si el JSON no llega */
   var CONFIG = {
     telefono: '657 77 11 35', telefono_enlace: '+34657771135',
-    email: 'apartamentoselsotano@gmail.com', whatsapp: null,
+    email: 'apartamentoselsotano@gmail.com', whatsapp: null, reservas: null,
     booking: 'https://www.booking.com/hotel/es/apartamentos-el-sotano.es.html',
     segundo_portal: null, foto_antigua: null
   };
@@ -521,10 +521,32 @@
     var figura = $('#dialogo-figura'), cuenta = $('#dialogo-cuenta'), minis = $('#dialogo-minis');
     var lista = [], i = 0, origen = null, ap = null, fotos = {}, cerrando = false, abierto = false;
 
+    /* La foto nueva entra con un fundido ENCIMA de la anterior (que se queda debajo hasta el final):
+       sin hueco en blanco entre una y otra. Se espera a decode() para no fundir una imagen a medio
+       cargar. Si se pasan fotos deprisa, cada una corta a la anterior (turno) y la última limpia. */
+    var turno = 0;
     function pintar() {
-      var f = fotos[lista[i]];
-      figura.textContent = '';
-      if (f) figura.appendChild(picture(f, '(max-width: 900px) 100vw, 70vw', 'eager'));
+      var f = fotos[lista[i]], t = ++turno;
+      var nueva = f ? picture(f, '(max-width: 900px) 100vw, 70vw', 'eager') : null;
+      if (!nueva || !figura.firstElementChild || !movimiento || !abierto) {
+        figura.textContent = '';
+        if (nueva) figura.appendChild(nueva);
+      } else {
+        nueva.className = 'dialogo__nueva';
+        gsap.set(nueva, { opacity: 0 });
+        figura.appendChild(nueva);
+        var img = nueva.querySelector('img');
+        var decodificada = img && img.decode ? img.decode().catch(function () {}) : Promise.resolve();
+        decodificada.then(function () {
+          if (t !== turno) { if (nueva.parentNode) nueva.parentNode.removeChild(nueva); return; }
+          gsap.to(nueva, { opacity: 1, duration: 0.22, ease: 'power2.out', onComplete: function () {
+            if (t !== turno) return;
+            while (figura.firstElementChild && figura.firstElementChild !== nueva) figura.removeChild(figura.firstElementChild);
+            nueva.className = '';
+            gsap.set(nueva, { clearProps: 'opacity' });
+          } });
+        });
+      }
       cuenta.textContent = 'Foto ' + (i + 1) + ' de ' + lista.length;
       todos('button', minis).forEach(function (b, k) { b.setAttribute('aria-current', k === i ? 'true' : 'false'); });
       var activa = minis.children[i];
@@ -559,7 +581,8 @@
         var m2 = crear('span', 'piso__m2', ' · ' + apto.m2 + ' ');
         m2.appendChild(crear('small', null, 'm²'));
         titulo.appendChild(m2);
-        $('#dialogo-booking').textContent = 'En Booking: «' + apto.nombre_booking + '»';
+        /* Se reserva en Octorate: el nombre que hay que reconocer es el de su motor, no el de Booking */
+        $('#dialogo-booking').textContent = apto.nombre_reserva ? 'Al reservar: «' + apto.nombre_reserva + '»' : 'En Booking: «' + apto.nombre_booking + '»';
         lineas($('#dialogo-camas'), apto.camas);
         lineas($('#dialogo-extras'), apto.extras);
         $('#dialogo-comunes').textContent = (comunes || []).join(' · ') + '.';
@@ -644,18 +667,41 @@
     });
     dlg.addEventListener('click', function (e) { if (e.target === dlg) cerrar(); });
     $('#dialogo-fechas').addEventListener('click', function () {
+      var url = urlReserva(ap);
+      if (url) { window.open(url, '_blank', 'noopener'); return; }
       var n = ap && ap.numero;
       cerrar(true);
       elegirApartamento(n);
     });
-    /* deslizar con el dedo */
-    var x0 = null;
-    figura.addEventListener('pointerdown', function (e) { x0 = e.clientX; });
-    figura.addEventListener('pointerup', function (e) {
-      if (x0 === null) return;
-      var dx = e.clientX - x0; x0 = null;
-      if (Math.abs(dx) > 40) ir(dx < 0 ? 1 : -1);
+    /* deslizar con el dedo: la foto sigue al dedo y, al soltar, pasa (más de 40 px, o un gesto rápido
+       aunque sea corto) o vuelve a su sitio. Con ratón solo cuenta el gesto: arrastrar una foto con el
+       ratón no es lo que nadie espera. La galería da la vuelta, así que no hay bordes que frenar. */
+    var x0 = null, t0 = 0, arrastrada = null;
+    figura.addEventListener('pointerdown', function (e) {
+      x0 = e.clientX; t0 = Date.now();
+      arrastrada = movimiento && e.pointerType !== 'mouse' ? figura.lastElementChild : null;
+      if (arrastrada) gsap.killTweensOf(arrastrada, 'x');
     });
+    figura.addEventListener('pointermove', function (e) {
+      if (x0 === null || !arrastrada) return;
+      var dx = e.clientX - x0;
+      gsap.set(arrastrada, { x: lista.length > 1 ? dx : dx * 0.25 });   /* con una sola foto, cede pero no pasa */
+    });
+    function soltar(e, cancelado) {
+      if (x0 === null) return;
+      var dx = cancelado ? 0 : e.clientX - x0;
+      var rapido = Math.abs(dx) / Math.max(1, Date.now() - t0) > 0.3;   /* px/ms: un golpe de dedo, no un arrastre lento */
+      var pasa = lista.length > 1 && (Math.abs(dx) > 40 || (rapido && Math.abs(dx) > 15));
+      var el = arrastrada; x0 = null; arrastrada = null;
+      if (pasa) {
+        if (el) gsap.to(el, { x: dx < 0 ? '-=60' : '+=60', duration: 0.25, ease: 'power2.out' });   /* la que se va sigue su camino bajo la nueva */
+        ir(dx < 0 ? 1 : -1);
+      } else if (el) {
+        gsap.to(el, { x: 0, duration: 0.25, ease: 'power2.out', clearProps: 'x' });
+      }
+    }
+    figura.addEventListener('pointerup', function (e) { soltar(e, false); });
+    figura.addEventListener('pointercancel', function (e) { soltar(e, true); });
     var api = { abrir: abrir, cerrar: cerrar, get indice() { return i; }, get lista() { return lista.slice(); } };
     API.dialogo = api;
     return api;
@@ -672,6 +718,14 @@
     return s;
   }
   function textoExtra(x) { return typeof x === 'string' ? x : x.texto; }
+  /* El motor de Octorate abre el calendario de un solo apartamento con &room=: quien ya ha elegido
+     no tiene que volver a buscarlo entre los cinco. Sin motor (null), cada botón sigue a su formulario. */
+  function urlReserva(ap) {
+    var url = String(CONFIG.reservas || '');
+    if (!/^https:\/\//i.test(url)) return null;
+    var room = ap && String(ap.octorate_room || '');
+    return /^\d+$/.test(room) ? url + (url.indexOf('?') < 0 ? '?' : '&') + 'room=' + room : url;
+  }
 
   /* ═══════════════ los apartamentos, pintados desde data/apartamentos.json ═══════════════ */
   function elegirApartamento(n) {
@@ -755,7 +809,10 @@
           var bt = crear('button', 'boton boton--linea', 'Consultar fechas');
           bt.type = 'button';
           bt.setAttribute('aria-label', 'Consultar fechas para el apartamento ' + ap.numero);
-          bt.addEventListener('click', function () { elegirApartamento(ap.numero); });
+          bt.addEventListener('click', function () {
+            var url = urlReserva(ap);
+            if (url) window.open(url, '_blank', 'noopener'); else elegirApartamento(ap.numero);
+          });
           c.appendChild(bt);
           cuerpo.appendChild(tr);
         });
@@ -1116,14 +1173,42 @@
     document.body.removeChild(t);
     return ok;
   }
+  /* envío real vía Web3Forms; sin "web3forms_key" en config.json, ni lo intenta (sigue
+     siendo "sin backend": el mensaje se queda preparado para email, copiar o llamar) */
+  function enviarMensaje(nombre, asunto, cuerpo) {
+    if (!CONFIG.web3forms_key || !window.fetch) return Promise.resolve(false);
+    return fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ access_key: CONFIG.web3forms_key, subject: asunto, from_name: nombre, message: cuerpo })
+    }).then(function (r) { return r.json(); }).then(function (r) { return !!(r && r.success); }).catch(function () { return false; });
+  }
   (function reserva() {
     var form = $('#reserva');
     if (!form) return;
     var llegada = $('#llegada'), salida = $('#salida');
     var errFechas = $('#fechas-error'), err = $('#reserva-error');
     var listo = $('#reserva-listo'), salidaTxt = $('#reserva-texto'), email = $('#reserva-email');
-    var estado = $('#reserva-estado'), wa = $('#reserva-whatsapp'), waNota = $('#whatsapp-nota');
+    var wa = $('#reserva-whatsapp'), waNota = $('#whatsapp-nota'), copiadoAnuncio = $('#reserva-copiado-anuncio');
+    var nota = $('#reserva-nota'), notaManual = nota.textContent;
+    var resultado = $('#reserva-resultado'), resultadoIcono = $('#reserva-resultado-icono');
+    var resultadoTitulo = $('#reserva-resultado-titulo'), resultadoTexto = $('#reserva-resultado-texto');
     var texto = '';
+    /* iconos mínimos del resultado del envío (trazo = currentColor, lo pinta el CSS según el estado) */
+    var ICONOS_RESULTADO = {
+      enviando: '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="26 40" stroke-linecap="round"/>',
+      ok: '<path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>',
+      error: '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7.5v6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="16.6" r="1.15" fill="currentColor" stroke="none"/>'
+    };
+    function mostrarResultado(tipo, titulo, texto2) {
+      listo.dataset.resultado = tipo;
+      resultadoIcono.innerHTML = ICONOS_RESULTADO[tipo];
+      resultadoIcono.classList.toggle('es-girando', tipo === 'enviando');
+      resultadoTitulo.textContent = titulo;
+      resultadoTexto.textContent = texto2 || '';
+      resultado.hidden = false;
+      if (resultado.scrollIntoView) resultado.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+    }
     var DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
     var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
     function aFecha(v) { var p = v.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
@@ -1162,6 +1247,11 @@
     }
     pintarWhatsapp();
     document.addEventListener('config-cargada', pintarWhatsapp);
+    function pintarNota() {
+      nota.textContent = CONFIG.web3forms_key ? 'Al pulsar, lo intentamos enviar nosotros; si no se puede, te dejamos el mensaje para que lo mandes tú.' : notaManual;
+    }
+    pintarNota();
+    document.addEventListener('config-cargada', pintarNota);
     wa.addEventListener('click', function () {
       if (!CONFIG.whatsapp || !texto) return;
       window.open('https://wa.me/' + String(CONFIG.whatsapp).replace(/\D/g, '') + '?text=' + encodeURIComponent(texto), '_blank', 'noopener');
@@ -1172,7 +1262,7 @@
       var okFechas = comprobarFechas(true);
       var nombre = form.elements.nombre.value.trim();
       form.elements.nombre.toggleAttribute('aria-invalid', !nombre);
-      err.textContent = nombre ? '' : 'Falta tu nombre, para que Manuel sepa quién escribe.';
+      err.textContent = nombre ? '' : 'Falta tu nombre, para que sepamos quién escribe.';
       if (!okFechas || !nombre) { listo.hidden = true; return; }
       var a = aFecha(llegada.value), b = aFecha(salida.value);
       var noches = Math.round((b - a) / 864e5);
@@ -1184,7 +1274,7 @@
       var cual = apto ? 'el Nº ' + apto : 'un apartamento';
       var mismoAnio = a.getFullYear() === b.getFullYear();
       var lineas = [
-        'Hola Manuel, somos ' + quienes + (mascota ? ' con mascota' : '') + ' y queremos ' + cual + ' del ' + largo(a, !mismoAnio) + ' al ' + largo(b, true) +
+        'Hola, somos ' + quienes + (mascota ? ' con mascota' : '') + ' y queremos ' + cual + ' del ' + largo(a, !mismoAnio) + ' al ' + largo(b, true) +
           ' (' + noches + (noches === 1 ? ' noche' : ' noches') + ').'
       ];
       var msg = form.elements.mensaje.value.trim();
@@ -1193,16 +1283,32 @@
       var tel = form.elements.telefono.value.trim();
       if (tel) lineas.push('Tel. ' + tel);
       texto = lineas.join('\n');
+      var asunto = 'Consulta de fechas · ' + (apto ? 'Nº ' + apto + ' · ' : '') + corto(a) + ' – ' + corto(b);
       salidaTxt.textContent = texto;
-      email.href = mailto('Consulta de fechas · ' + (apto ? 'Nº ' + apto + ' · ' : '') + corto(a) + ' – ' + corto(b), texto);
-      estado.textContent = '';
+      email.href = mailto(asunto, texto);
       listo.hidden = false;
+      resultado.hidden = true;
+      delete listo.dataset.resultado;
       setTimeout(refrescar, 30);
       if (listo.scrollIntoView) listo.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+      if (CONFIG.web3forms_key) {
+        mostrarResultado('enviando', 'Enviando…', '');
+        enviarMensaje(nombre, asunto, texto).then(function (ok) {
+          if (ok) mostrarResultado('ok', 'Mensaje enviado', 'Te contestamos en cuanto podamos.');
+          else mostrarResultado('error', 'No se ha podido enviar solo', 'Usa uno de los botones de abajo para mandarlo tú.');
+        });
+      }
     });
-    $('#reserva-copiar').addEventListener('click', function () {
+    /* el propio botón confirma donde está mirando quien lo pulsa; el aviso es para el lector de pantalla */
+    var botonCopiar = $('#reserva-copiar'), rotuloCopiar = botonCopiar.textContent, vueltaCopiar = 0;
+    botonCopiar.addEventListener('click', function () {
       copiar(texto).then(function (ok) {
-        estado.textContent = ok ? 'Mensaje copiado. Pégalo donde quieras.' : 'No se ha podido copiar: selecciona el texto y cópialo a mano.';
+        copiadoAnuncio.textContent = ok ? 'Mensaje copiado. Pégalo donde quieras.' : 'No se ha podido copiar: selecciona el texto y cópialo a mano.';
+        if (!ok) return;
+        botonCopiar.style.minWidth = botonCopiar.offsetWidth + 'px';   /* que no encoja y mueva a su vecino */
+        botonCopiar.textContent = 'Copiado';
+        clearTimeout(vueltaCopiar);
+        vueltaCopiar = setTimeout(function () { botonCopiar.textContent = rotuloCopiar; }, 1600);
       });
     });
   })();
@@ -1224,6 +1330,33 @@
     });
     if (reabrir) reabrir.addEventListener('click', function () { ver(true); ok.focus(); });
   })();
+
+  /* ───────────────── motor de reservas (Octorate) ─────────────────
+     Mientras "reservas" sea null en data/config.json no pasa nada: los botones
+     siguen llevando al formulario de consulta. Con una URL https, todos los
+     «Consultar fechas» pasan a ser «Reservar» y salen al motor, y el formulario
+     queda como consulta para quien prefiera preguntar antes. */
+  function motorDeReservas() {
+    var url = String(CONFIG.reservas || '');
+    if (!/^https:\/\//i.test(url)) return;
+    todos('a[href="#fechas"]').forEach(function (a) {
+      a.href = url; a.target = '_blank'; a.rel = 'noopener';
+      a.textContent = 'Reservar';
+    });
+    var dlgBtn = $('#dialogo-fechas');
+    if (dlgBtn) dlgBtn.textContent = 'Reservar este apartamento';
+    var ante = $('#fechas .antetitulo'), entrada = $('#fechas .seccion__entrada');
+    if (ante) ante.textContent = 'Consultas';
+    if (entrada && !$('#fechas .fechas__motor')) {
+      entrada.textContent = '¿Prefieres preguntarnos antes de reservar? Rellena esto y te dejamos escrito el mensaje. Lo envías tú, por email o como prefieras, y te contestamos con la disponibilidad y el precio de esas fechas.';
+      var p = crear('p', 'fechas__motor');
+      var a = crear('a', 'boton boton--almagre', 'Reservar online');
+      a.href = url; a.target = '_blank'; a.rel = 'noopener';
+      p.appendChild(a);
+      entrada.parentNode.insertBefore(p, entrada.nextSibling);
+    }
+  }
+  promesaConfig.then(motorDeReservas);
 
   var anio = $('#anio');
   if (anio) anio.textContent = new Date().getFullYear();
@@ -1278,7 +1411,6 @@
     promesaPisos.then(function (d) { if (d.provisional || d.apartamentos.some(function (a) { return a.provisional; })) aviso('pisos', 'Apartamentos provisionales: números y nombres, pendiente de Manuel'); }).catch(function () {});
     promesaConfig.then(function (c) { if (!c.segundo_portal) aviso('portales', 'Dos direcciones: pendiente de Manuel'); });
     aviso('barra', 'La barra del antiguo restaurante: sin confirmar');
-    aviso('silla', 'Accesibilidad: falta saber qué apartamentos están adaptados');
     API.mando = { aplicar: aplicar };
   })();
   /* ═══════════ fin del bloque [MANDO DE MAQUETA] ═══════════ */

@@ -1,5 +1,5 @@
 {
- "fuente": "Fotos subidas por el propio alojamiento a su ficha de Booking (feb.-abr. 2025), graduadas con scripts/gradar.py. Sin recortes ni retoques de contenido.",
+ "fuente": "Fotos subidas por el propio alojamiento a su ficha de Booking (feb.-abr. 2025) y, la fachada, a su motor de Octorate (original de 3200 px), graduadas con scripts/gradar.py. Sin recortes ni retoques de contenido.",
  "fotos": [
   {
    "id": "650532149",
@@ -105,8 +105,8 @@
   },
   {
    "id": "670608186",
-   "grupo": "2",
-   "alt": "Salón del Nº 2: el mueble largo de madera con cajones, sofá azul y mesa redonda",
+   "grupo": "4",
+   "alt": "Salón del Nº 4: el mueble largo de madera con cajones, sofá azul y mesa redonda",
    "w": 3000,
    "h": 2004,
    "anchos": [
@@ -118,8 +118,8 @@
   },
   {
    "id": "670608668",
-   "grupo": "2",
-   "alt": "Salón del Nº 2 con mecedora, sofá azul y el mueble de madera",
+   "grupo": "4",
+   "alt": "Salón del Nº 4 con mecedora, sofá azul y el mueble de madera",
    "w": 3000,
    "h": 2002,
    "anchos": [
@@ -131,8 +131,8 @@
   },
   {
    "id": "670608660",
-   "grupo": "2",
-   "alt": "Comedor y salón del Nº 2 con mesa blanca y sofá azul",
+   "grupo": "4",
+   "alt": "Comedor y salón del Nº 4 con mesa blanca y sofá azul",
    "w": 3000,
    "h": 2002,
    "anchos": [
@@ -144,8 +144,8 @@
   },
   {
    "id": "670608208",
-   "grupo": "2",
-   "alt": "Salón-comedor del Nº 2 con mesa blanca, sofá azul y mecedora",
+   "grupo": "4",
+   "alt": "Salón-comedor del Nº 4 con mesa blanca, sofá azul y mecedora",
    "w": 3000,
    "h": 2002,
    "anchos": [
@@ -157,8 +157,8 @@
   },
   {
    "id": "670608312",
-   "grupo": "2",
-   "alt": "Salón del Nº 2 con sofá azul y un cuadro de la Venus de Botticelli",
+   "grupo": "4",
+   "alt": "Salón del Nº 4 con sofá azul y un cuadro de la Venus de Botticelli",
    "w": 3000,
    "h": 2004,
    "anchos": [
@@ -170,7 +170,7 @@
   },
   {
    "id": "670608339",
-   "grupo": "2",
+   "grupo": "4",
    "alt": "Puerta antigua de madera con vidriera verde y ámbar",
    "w": 3000,
    "h": 2002,
@@ -183,8 +183,34 @@
   },
   {
    "id": "670607988",
-   "grupo": "2",
-   "alt": "Dormitorio del Nº 2 con cama doble, cama individual y mesa con lámpara",
+   "grupo": "4",
+   "alt": "Dormitorio del Nº 4 con cama doble, cama individual y mesa con lámpara",
+   "w": 3000,
+   "h": 2002,
+   "anchos": [
+    480,
+    960,
+    1440,
+    2000
+   ]
+  },
+  {
+   "id": "670607962",
+   "grupo": "4",
+   "alt": "Dormitorio del Nº 4 visto desde la ventana: cama doble con cabecero de forja, cama individual y platos en la pared",
+   "w": 3000,
+   "h": 2002,
+   "anchos": [
+    480,
+    960,
+    1440,
+    2000
+   ]
+  },
+  {
+   "id": "670607946",
+   "grupo": "4",
+   "alt": "Pasillo del Nº 4 con platos en la pared, el cuadro de la Venus al fondo y el dormitorio a la derecha",
    "w": 3000,
    "h": 2002,
    "anchos": [
@@ -196,8 +222,8 @@
   },
   {
    "id": "670608229",
-   "grupo": "2",
-   "alt": "Cocina del Nº 2 con horno, placa, microondas y nevera",
+   "grupo": "4",
+   "alt": "Cocina del Nº 4 con horno, placa, microondas y nevera",
    "w": 3000,
    "h": 2002,
    "anchos": [
@@ -209,8 +235,8 @@
   },
   {
    "id": "670608256",
-   "grupo": "2",
-   "alt": "Cocina y comedor del Nº 2",
+   "grupo": "4",
+   "alt": "Cocina y comedor del Nº 4",
    "w": 3000,
    "h": 2002,
    "anchos": [
@@ -222,8 +248,8 @@
   },
   {
    "id": "670608284",
-   "grupo": "2",
-   "alt": "Vista general del salón y la cocina del Nº 2, con suelo de barro",
+   "grupo": "4",
+   "alt": "Vista general del salón y la cocina del Nº 4, con suelo de barro",
    "w": 3000,
    "h": 2002,
    "anchos": [
@@ -235,8 +261,8 @@
   },
   {
    "id": "670608074",
-   "grupo": "2",
-   "alt": "Baño del Nº 2 con ducha de cristal",
+   "grupo": "4",
+   "alt": "Baño del Nº 4 con ducha de cristal",
    "w": 3000,
    "h": 2002,
    "anchos": [
@@ -248,8 +274,8 @@
   },
   {
    "id": "670608106",
-   "grupo": "2",
-   "alt": "Baño del Nº 2 con lavabo y espejo de madera",
+   "grupo": "4",
+   "alt": "Baño del Nº 4 con lavabo y espejo de madera",
    "w": 3000,
    "h": 2002,
    "anchos": [
@@ -261,7 +287,7 @@
   },
   {
    "id": "670608170",
-   "grupo": "2",
+   "grupo": "4",
    "alt": "El patio: suelo de barro, enrejado de madera, plantas y mesa",
    "w": 3000,
    "h": 2002,
@@ -274,8 +300,8 @@
   },
   {
    "id": "657883542",
-   "grupo": "3",
-   "alt": "Planta abierta del Nº 3 con la celosía de listones de madera",
+   "grupo": "2",
+   "alt": "Planta abierta del Nº 2 con la celosía de listones de madera",
    "w": 2048,
    "h": 1536,
    "anchos": [
@@ -287,8 +313,8 @@
   },
   {
    "id": "657883547",
-   "grupo": "3",
-   "alt": "Cocina y comedor del Nº 3 con mesa ovalada blanca",
+   "grupo": "2",
+   "alt": "Cocina y comedor del Nº 2 con mesa ovalada blanca",
    "w": 2048,
    "h": 1536,
    "anchos": [
@@ -300,8 +326,8 @@
   },
   {
    "id": "657883551",
-   "grupo": "3",
-   "alt": "Planta abierta del Nº 3: salón, comedor y cama",
+   "grupo": "2",
+   "alt": "Planta abierta del Nº 2: salón, comedor y cama",
    "w": 2048,
    "h": 1536,
    "anchos": [
@@ -313,8 +339,8 @@
   },
   {
    "id": "657883538",
-   "grupo": "3",
-   "alt": "Zona de dormir del Nº 3 con cama, sofá y armario de madera",
+   "grupo": "2",
+   "alt": "Zona de dormir del Nº 2 con cama, sofá y armario de madera",
    "w": 2048,
    "h": 1536,
    "anchos": [
@@ -326,8 +352,8 @@
   },
   {
    "id": "657883584",
-   "grupo": "3",
-   "alt": "Cocina con campana negra y comedor del Nº 3",
+   "grupo": "2",
+   "alt": "Cocina con campana negra y comedor del Nº 2",
    "w": 2048,
    "h": 1536,
    "anchos": [
@@ -339,8 +365,8 @@
   },
   {
    "id": "657883559",
-   "grupo": "3",
-   "alt": "Platos de cerámica colgados en la pared del Nº 3",
+   "grupo": "2",
+   "alt": "Platos de cerámica colgados en la pared del Nº 2",
    "w": 2048,
    "h": 1536,
    "anchos": [
@@ -352,8 +378,8 @@
   },
   {
    "id": "657883554",
-   "grupo": "3",
-   "alt": "Baño del Nº 3 con dos lavabos",
+   "grupo": "2",
+   "alt": "Baño del Nº 2 con dos lavabos",
    "w": 2048,
    "h": 1536,
    "anchos": [
@@ -365,8 +391,8 @@
   },
   {
    "id": "657883564",
-   "grupo": "3",
-   "alt": "Baño del Nº 3 con lavabo y aseo aparte",
+   "grupo": "2",
+   "alt": "Baño del Nº 2 con lavabo y aseo aparte",
    "w": 2048,
    "h": 1536,
    "anchos": [
@@ -378,8 +404,8 @@
   },
   {
    "id": "657883574",
-   "grupo": "3",
-   "alt": "Entrada al baño del Nº 3",
+   "grupo": "2",
+   "alt": "Entrada al baño del Nº 2",
    "w": 2048,
    "h": 1536,
    "anchos": [
@@ -391,8 +417,8 @@
   },
   {
    "id": "651585137",
-   "grupo": "4",
-   "alt": "Comedor del Nº 4: mesa ovalada con lámpara de araña",
+   "grupo": "3",
+   "alt": "Comedor del Nº 3: mesa ovalada con lámpara de araña",
    "w": 2048,
    "h": 1536,
    "anchos": [
@@ -404,8 +430,8 @@
   },
   {
    "id": "651585140",
-   "grupo": "4",
-   "alt": "Cocina del Nº 4 con lavadora, horno y nevera",
+   "grupo": "3",
+   "alt": "Cocina del Nº 3 con lavadora, horno y nevera",
    "w": 2048,
    "h": 1536,
    "anchos": [
@@ -417,8 +443,8 @@
   },
   {
    "id": "651585159",
-   "grupo": "4",
-   "alt": "Salón, comedor y cocina del Nº 4",
+   "grupo": "3",
+   "alt": "Salón, comedor y cocina del Nº 3",
    "w": 2048,
    "h": 1536,
    "anchos": [
@@ -430,8 +456,8 @@
   },
   {
    "id": "651585167",
-   "grupo": "4",
-   "alt": "Salón del Nº 4 con sofá gris y mesa de centro blanca",
+   "grupo": "3",
+   "alt": "Salón del Nº 3 con sofá gris y mesa de centro blanca",
    "w": 2048,
    "h": 1536,
    "anchos": [
@@ -443,8 +469,8 @@
   },
   {
    "id": "651584991",
-   "grupo": "4",
-   "alt": "Salón y cocina del Nº 4 con sofá gris y lavadora",
+   "grupo": "3",
+   "alt": "Salón y cocina del Nº 3 con sofá gris y lavadora",
    "w": 2048,
    "h": 1536,
    "anchos": [
@@ -456,8 +482,8 @@
   },
   {
    "id": "651585181",
-   "grupo": "4",
-   "alt": "Dormitorio del Nº 4 con cama de cabecero de madera",
+   "grupo": "3",
+   "alt": "Dormitorio del Nº 3 con cama de cabecero de madera",
    "w": 2048,
    "h": 1536,
    "anchos": [
@@ -469,8 +495,8 @@
   },
   {
    "id": "651585144",
-   "grupo": "4",
-   "alt": "Terraza pequeña del Nº 4 con suelo de barro, mesa y sillas",
+   "grupo": "3",
+   "alt": "Terraza pequeña del Nº 3 con suelo de barro, mesa y sillas",
    "w": 1536,
    "h": 2048,
    "anchos": [
@@ -481,8 +507,8 @@
   },
   {
    "id": "651585149",
-   "grupo": "4",
-   "alt": "Baño del Nº 4 con ducha y espejo de madera",
+   "grupo": "3",
+   "alt": "Baño del Nº 3 con ducha y espejo de madera",
    "w": 2048,
    "h": 1536,
    "anchos": [
@@ -493,11 +519,11 @@
    ]
   },
   {
-   "id": "671007138",
+   "id": "1772031605176",
    "grupo": "casa",
    "alt": "Fachada del nº 6: planta baja de almagre, panel blanco con el logo y la placa AT",
-   "w": 3000,
-   "h": 2002,
+   "w": 3200,
+   "h": 2136,
    "anchos": [
     480,
     960,
