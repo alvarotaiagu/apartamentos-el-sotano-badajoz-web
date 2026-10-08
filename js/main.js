@@ -1173,14 +1173,42 @@
     document.body.removeChild(t);
     return ok;
   }
+  /* envío real vía Web3Forms; sin "web3forms_key" en config.json, ni lo intenta (sigue
+     siendo "sin backend": el mensaje se queda preparado para email, copiar o llamar) */
+  function enviarMensaje(nombre, asunto, cuerpo) {
+    if (!CONFIG.web3forms_key || !window.fetch) return Promise.resolve(false);
+    return fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ access_key: CONFIG.web3forms_key, subject: asunto, from_name: nombre, message: cuerpo })
+    }).then(function (r) { return r.json(); }).then(function (r) { return !!(r && r.success); }).catch(function () { return false; });
+  }
   (function reserva() {
     var form = $('#reserva');
     if (!form) return;
     var llegada = $('#llegada'), salida = $('#salida');
     var errFechas = $('#fechas-error'), err = $('#reserva-error');
     var listo = $('#reserva-listo'), salidaTxt = $('#reserva-texto'), email = $('#reserva-email');
-    var estado = $('#reserva-estado'), wa = $('#reserva-whatsapp'), waNota = $('#whatsapp-nota');
+    var wa = $('#reserva-whatsapp'), waNota = $('#whatsapp-nota'), copiadoAnuncio = $('#reserva-copiado-anuncio');
+    var nota = $('#reserva-nota'), notaManual = nota.textContent;
+    var resultado = $('#reserva-resultado'), resultadoIcono = $('#reserva-resultado-icono');
+    var resultadoTitulo = $('#reserva-resultado-titulo'), resultadoTexto = $('#reserva-resultado-texto');
     var texto = '';
+    /* iconos mínimos del resultado del envío (trazo = currentColor, lo pinta el CSS según el estado) */
+    var ICONOS_RESULTADO = {
+      enviando: '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="26 40" stroke-linecap="round"/>',
+      ok: '<path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>',
+      error: '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7.5v6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="16.6" r="1.15" fill="currentColor" stroke="none"/>'
+    };
+    function mostrarResultado(tipo, titulo, texto2) {
+      listo.dataset.resultado = tipo;
+      resultadoIcono.innerHTML = ICONOS_RESULTADO[tipo];
+      resultadoIcono.classList.toggle('es-girando', tipo === 'enviando');
+      resultadoTitulo.textContent = titulo;
+      resultadoTexto.textContent = texto2 || '';
+      resultado.hidden = false;
+      if (resultado.scrollIntoView) resultado.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+    }
     var DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
     var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
     function aFecha(v) { var p = v.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
@@ -1219,6 +1247,11 @@
     }
     pintarWhatsapp();
     document.addEventListener('config-cargada', pintarWhatsapp);
+    function pintarNota() {
+      nota.textContent = CONFIG.web3forms_key ? 'Al pulsar, lo intentamos enviar nosotros; si no se puede, te dejamos el mensaje para que lo mandes tú.' : notaManual;
+    }
+    pintarNota();
+    document.addEventListener('config-cargada', pintarNota);
     wa.addEventListener('click', function () {
       if (!CONFIG.whatsapp || !texto) return;
       window.open('https://wa.me/' + String(CONFIG.whatsapp).replace(/\D/g, '') + '?text=' + encodeURIComponent(texto), '_blank', 'noopener');
@@ -1250,18 +1283,27 @@
       var tel = form.elements.telefono.value.trim();
       if (tel) lineas.push('Tel. ' + tel);
       texto = lineas.join('\n');
+      var asunto = 'Consulta de fechas · ' + (apto ? 'Nº ' + apto + ' · ' : '') + corto(a) + ' – ' + corto(b);
       salidaTxt.textContent = texto;
-      email.href = mailto('Consulta de fechas · ' + (apto ? 'Nº ' + apto + ' · ' : '') + corto(a) + ' – ' + corto(b), texto);
-      estado.textContent = '';
+      email.href = mailto(asunto, texto);
       listo.hidden = false;
+      resultado.hidden = true;
+      delete listo.dataset.resultado;
       setTimeout(refrescar, 30);
       if (listo.scrollIntoView) listo.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+      if (CONFIG.web3forms_key) {
+        mostrarResultado('enviando', 'Enviando…', '');
+        enviarMensaje(nombre, asunto, texto).then(function (ok) {
+          if (ok) mostrarResultado('ok', 'Mensaje enviado', 'Te contestamos en cuanto podamos.');
+          else mostrarResultado('error', 'No se ha podido enviar solo', 'Usa uno de los botones de abajo para mandarlo tú.');
+        });
+      }
     });
-    /* el propio botón confirma donde está mirando quien lo pulsa; el aviso de abajo es para el lector de pantalla */
+    /* el propio botón confirma donde está mirando quien lo pulsa; el aviso es para el lector de pantalla */
     var botonCopiar = $('#reserva-copiar'), rotuloCopiar = botonCopiar.textContent, vueltaCopiar = 0;
     botonCopiar.addEventListener('click', function () {
       copiar(texto).then(function (ok) {
-        estado.textContent = ok ? 'Mensaje copiado. Pégalo donde quieras.' : 'No se ha podido copiar: selecciona el texto y cópialo a mano.';
+        copiadoAnuncio.textContent = ok ? 'Mensaje copiado. Pégalo donde quieras.' : 'No se ha podido copiar: selecciona el texto y cópialo a mano.';
         if (!ok) return;
         botonCopiar.style.minWidth = botonCopiar.offsetWidth + 'px';   /* que no encoja y mueva a su vecino */
         botonCopiar.textContent = 'Copiado';

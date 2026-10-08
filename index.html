@@ -575,20 +575,29 @@
       <p class="campo__error campo--ancho" id="reserva-error" aria-live="polite"></p>
       <div class="campo--ancho reserva__enviar">
         <button class="boton boton--almagre iman" type="submit">Preparar el mensaje</button>
-        <p class="reserva__nota">No se envía nada desde aquí: el mensaje lo mandas tú.</p>
+        <p class="reserva__nota" id="reserva-nota">No se envía nada desde aquí: el mensaje lo mandas tú.</p>
       </div>
     </form>
     <div class="listo" id="reserva-listo" hidden>
-      <p class="listo__titulo">Tu mensaje, listo para enviar</p>
-      <pre class="listo__texto" id="reserva-texto"></pre>
-      <div class="listo__botones">
-        <a class="boton boton--almagre" id="reserva-email" href="mailto:apartamentoselsotano@gmail.com">Enviar por email</a>
-        <button class="boton boton--linea" id="reserva-copiar" type="button">Copiar mensaje</button>
-        <a class="boton boton--linea" href="tel:+34657771135">Llamar</a>
-        <button class="boton boton--linea es-apagado" id="reserva-whatsapp" type="button" disabled>WhatsApp</button>
+      <div class="listo__resultado" id="reserva-resultado" hidden aria-live="polite">
+        <svg class="listo__resultado-icono" id="reserva-resultado-icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"></svg>
+        <div>
+          <p class="listo__resultado-titulo" id="reserva-resultado-titulo"></p>
+          <p class="listo__resultado-texto" id="reserva-resultado-texto"></p>
+        </div>
       </div>
-      <p class="listo__nota" id="whatsapp-nota">WhatsApp, muy pronto.</p>
-      <p class="listo__estado" id="reserva-estado" aria-live="polite"></p>
+      <div id="listo-manual">
+        <p class="listo__titulo">Tu mensaje, listo para enviar</p>
+        <pre class="listo__texto" id="reserva-texto"></pre>
+        <div class="listo__botones">
+          <a class="boton boton--almagre" id="reserva-email" href="mailto:apartamentoselsotano@gmail.com">Enviar por email</a>
+          <button class="boton boton--linea" id="reserva-copiar" type="button">Copiar mensaje</button>
+          <a class="boton boton--linea" href="tel:+34657771135">Llamar</a>
+          <button class="boton boton--linea es-apagado" id="reserva-whatsapp" type="button" disabled>WhatsApp</button>
+        </div>
+        <p class="listo__nota" id="whatsapp-nota">WhatsApp, muy pronto.</p>
+        <p class="visualmente-oculto" id="reserva-copiado-anuncio" aria-live="polite"></p>
+      </div>
     </div>
     <p class="fechas__booking">También puedes reservar en <a href="https://www.booking.com/hotel/es/apartamentos-el-sotano.es.html" rel="noopener">Booking</a>.</p>
   </section>

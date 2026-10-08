@@ -520,8 +520,23 @@ html.con-movimiento .categoria__liston { transition: transform 1.1s var(--suave)
 .listo .boton--linea:hover { background: rgba(247, 244, 239, .1); }
 .listo .boton--almagre { background: var(--cal); color: var(--almagre-sombra); }
 .listo .boton.es-apagado, .listo .boton[disabled] { color: #B5A99F; border-color: rgba(247, 244, 239, .3); }
-.listo__nota, .listo__estado { margin-top: .9rem; font-size: .86rem; color: #E7DDD3; }
+.listo__nota { margin-top: .9rem; font-size: .86rem; color: #E7DDD3; }
 .listo__nota[hidden] { display: none; }
+
+/* resultado del envío automático (Web3Forms): solo se ve con "web3forms_key" puesta.
+   «enviando»/«ok» esconden el texto+botones manuales; «error» los deja (es el plan B) */
+.listo__resultado { display: flex; gap: .9rem; align-items: flex-start; padding: 1rem 1.1rem; margin-bottom: 1.3rem; border-left: 3px solid rgba(247, 244, 239, .4); background: rgba(247, 244, 239, .06); }
+.listo__resultado[hidden] { display: none; }
+.listo__resultado-icono { flex: none; width: 26px; height: 26px; margin-top: .1rem; color: var(--cal); }
+.listo__resultado-titulo { font: 400 1.15rem/1.2 var(--tipo-rotulo); text-transform: uppercase; letter-spacing: .02em; }
+.listo__resultado-texto { margin-top: .3rem; font-size: .92rem; color: #E7DDD3; }
+.listo[data-resultado="ok"] .listo__resultado { border-color: var(--cal); background: rgba(247, 244, 239, .12); }
+.listo[data-resultado="error"] .listo__resultado { border-color: var(--almagre); background: rgba(140, 91, 77, .35); }
+.listo[data-resultado="error"] .listo__resultado-icono { color: #E3B29D; }
+.listo[data-resultado="enviando"] #listo-manual, .listo[data-resultado="ok"] #listo-manual { display: none; }
+.listo__resultado-icono.es-girando { animation: listo-girar 1s linear infinite; transform-origin: center; }
+@keyframes listo-girar { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .listo__resultado-icono.es-girando { animation: none; } }
 .fechas__booking { grid-column: 2; margin-top: 1.4rem; font-size: .95rem; }
 .fechas__motor { margin-top: 1.2rem; }
 
