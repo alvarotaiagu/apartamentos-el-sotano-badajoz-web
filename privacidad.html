@@ -23,7 +23,7 @@
   <p>Titular: <span class="pendiente">[PENDIENTE]</span> · NIF: <span class="pendiente">[PENDIENTE]</span> · C/ Virgen de la Soledad, 6 · 06002 Badajoz · <a href="mailto:apartamentoselsotano@gmail.com">apartamentoselsotano@gmail.com</a>.</p>
 
   <h2>Qué datos se recogen</h2>
-  <p>El formulario «Consultar fechas» compone el mensaje en tu navegador y, al pulsar el botón, lo envía a través del servicio Web3Forms (web3forms.com) para que llegue a nuestro correo. Solo se transmite lo que escribes en el formulario, para contestarte. Si el envío falla, puedes mandarlo tú por email, copiarlo o llamar.</p>
+  <p>Ninguno a través de la propia web. El formulario «Consultar fechas» intenta enviarse solo, a través de Web3Forms (ver «Servicios de terceros»); solo si no puede, el mensaje se queda compuesto en tu navegador para que lo envíes tú por email, lo copies o llames.</p>
   <p>Si nos escribes o nos llamas, usaremos tu nombre, tu teléfono, tu email y las fechas que nos des solo para contestarte y, si reservas, para gestionar tu estancia. No los cedemos a nadie salvo obligación legal (por ejemplo, el registro de viajeros que exige la normativa a los alojamientos).</p>
   <p>Puedes pedirnos acceder a tus datos, corregirlos o borrarlos escribiendo a <a href="mailto:apartamentoselsotano@gmail.com">apartamentoselsotano@gmail.com</a>, y reclamar ante la Agencia Española de Protección de Datos (aepd.es).</p>
 
@@ -33,6 +33,7 @@
     <thead><tr><th scope="col">Clave</th><th scope="col">Para qué</th><th scope="col">Cuánto dura</th></tr></thead>
     <tbody>
       <tr><td>elsotano-cookies</td><td>Recordar que ya has visto el aviso de cookies.</td><td>Hasta que borres los datos del navegador.</td></tr>
+      <tr><td>elsotano-envio</td><td>La hora de tu último envío del formulario, para no mandar el mismo mensaje varias veces seguidas.</td><td>Hasta que borres los datos del navegador.</td></tr>
       <!-- [MANDO DE MAQUETA] solo existe en la maqueta de revisión: se borra con node scripts/quitar-mando.mjs -->
       <tr><td>elsotano-densidad</td><td>Solo en la versión de revisión: recordar qué versión de la web estabas viendo.</td><td>Hasta que borres los datos del navegador.</td></tr>
     </tbody>
@@ -40,6 +41,7 @@
 
   <h2>Servicios de terceros</h2>
   <ul>
+    <li><b>Web3Forms</b>: el mensaje del formulario «Consultar fechas» se envía primero a través de su servicio, que lo reenvía por email al titular; trata esos datos solo para hacer esa entrega, según su propia política de privacidad.</li>
     <li><b>Google Maps</b>: el mapa no se carga hasta que pulsas «Ver el mapa». Al cargarlo, Google puede poner sus propias cookies.</li>
     <li>Las tipografías están en la propia web: no se piden a Google Fonts.</li>
     <li>Los enlaces a Booking, Instagram y Google te llevan a sus webs, con sus propias políticas.</li>
