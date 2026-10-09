@@ -39,6 +39,20 @@
     segundo_portal: null, foto_antigua: null
   };
 
+  /* idioma: la versión en portugués (pt/) lleva lang="pt-PT", data-raiz="../" y js/pt.js, que
+     generan scripts/traducir.mjs desde traducciones/pt.json. t() busca ahí cada texto que pinta
+     este archivo (también los de data/*.json) y, si no está, lo deja en castellano. Los {huecos}
+     se rellenan después de traducir. */
+  var LENGUA = /^pt/i.test(html.lang) ? 'pt' : 'es';
+  var RAIZ = html.getAttribute('data-raiz') || '';
+  var PT = LENGUA === 'pt' ? window.ElSotanoPT || {} : null;
+  function t(s, datos) {
+    var r = (PT && PT[s]) || s;
+    return datos ? r.replace(/\{(\w+)\}/g, function (todo, k) { return k in datos ? datos[k] : todo; }) : r;
+  }
+  /* el motor de Octorate sigue el idioma del navegador: desde la versión en portugués se le pide en portugués */
+  function conIdioma(url) { return LENGUA === 'pt' ? url + (url.indexOf('?') < 0 ? '?' : '&') + 'lang=pt' : url; }
+
   function $(s, r) { return (r || document).querySelector(s); }
   function todos(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
   function densidad() { return html.classList.contains('densidad-sobria') ? 'sobria' : 'listones'; }
@@ -66,6 +80,9 @@
   }
 
   var API = window.ElSotano = window.ElSotano || {};
+  API.lengua = LENGUA;
+  API.raiz = RAIZ;
+  API.t = t;
   API.densidad = densidad;
   API.movimiento = movimiento;
   API.alEntrar = alEntrar;
@@ -75,9 +92,9 @@
     if (!window.fetch) return Promise.reject(new Error('sin fetch'));
     return fetch(url, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(url); return r.json(); });
   }
-  var promesaFotos = cargarJSON('data/fotos.json').then(function (d) { var m = {}; d.fotos.forEach(function (f) { m[f.id] = f; }); return m; });
-  var promesaPisos = cargarJSON('data/apartamentos.json');
-  var promesaConfig = cargarJSON('data/config.json').then(function (c) {
+  var promesaFotos = cargarJSON(RAIZ + 'data/fotos.json').then(function (d) { var m = {}; d.fotos.forEach(function (f) { m[f.id] = f; }); return m; });
+  var promesaPisos = cargarJSON(RAIZ + 'data/apartamentos.json');
+  var promesaConfig = cargarJSON(RAIZ + 'data/config.json').then(function (c) {
     Object.keys(c).forEach(function (k) { CONFIG[k] = c[k]; });
     document.dispatchEvent(new CustomEvent('config-cargada', { detail: CONFIG }));
     return CONFIG;
@@ -86,7 +103,7 @@
   API.promesaConfig = promesaConfig;
 
   function picture(f, sizes, carga, alt) {
-    var set = function (ext) { return f.anchos.map(function (a) { return 'assets/fotos/' + f.id + '-' + a + '.' + ext + ' ' + a + 'w'; }).join(', '); };
+    var set = function (ext) { return f.anchos.map(function (a) { return RAIZ + 'assets/fotos/' + f.id + '-' + a + '.' + ext + ' ' + a + 'w'; }).join(', '); };
     var mayor = f.anchos[f.anchos.length - 1];
     var p = document.createElement('picture');
     ['avif', 'webp'].forEach(function (ext) {
@@ -94,10 +111,10 @@
       s.type = 'image/' + ext; s.srcset = set(ext); s.sizes = sizes; p.appendChild(s);
     });
     var img = document.createElement('img');
-    img.src = 'assets/fotos/' + f.id + '-' + mayor + '.jpg';
+    img.src = RAIZ + 'assets/fotos/' + f.id + '-' + mayor + '.jpg';
     img.srcset = set('jpg'); img.sizes = sizes;
     img.width = mayor; img.height = Math.round(f.h * mayor / f.w);
-    img.alt = alt == null ? f.alt : alt;
+    img.alt = alt == null ? t(f.alt) : alt;
     img.decoding = 'async';
     if (carga !== 'eager') img.loading = 'lazy';
     p.appendChild(img);
@@ -433,7 +450,7 @@
 
     if (!movimiento) return;
     var resto = todos('.hero__entrada, .hero__acciones > *, .hero__notas', seccion);
-    var nav = todos('.cabecera__nav > a');
+    var nav = todos('.cabecera__nav > a, .cabecera__idioma');
     var fotosCaja = $('#hero-fotos');
     gsap.set(resto, { opacity: 0, y: 18 });
     if (!esMovil()) gsap.set(nav, { opacity: 0, y: -10 });
@@ -526,7 +543,7 @@
        cargar. Si se pasan fotos deprisa, cada una corta a la anterior (turno) y la última limpia. */
     var turno = 0;
     function pintar() {
-      var f = fotos[lista[i]], t = ++turno;
+      var f = fotos[lista[i]], miTurno = ++turno;
       var nueva = f ? picture(f, '(max-width: 900px) 100vw, 70vw', 'eager') : null;
       if (!nueva || !figura.firstElementChild || !movimiento || !abierto) {
         figura.textContent = '';
@@ -538,16 +555,16 @@
         var img = nueva.querySelector('img');
         var decodificada = img && img.decode ? img.decode().catch(function () {}) : Promise.resolve();
         decodificada.then(function () {
-          if (t !== turno) { if (nueva.parentNode) nueva.parentNode.removeChild(nueva); return; }
+          if (miTurno !== turno) { if (nueva.parentNode) nueva.parentNode.removeChild(nueva); return; }
           gsap.to(nueva, { opacity: 1, duration: 0.22, ease: 'power2.out', onComplete: function () {
-            if (t !== turno) return;
+            if (miTurno !== turno) return;
             while (figura.firstElementChild && figura.firstElementChild !== nueva) figura.removeChild(figura.firstElementChild);
             nueva.className = '';
             gsap.set(nueva, { clearProps: 'opacity' });
           } });
         });
       }
-      cuenta.textContent = 'Foto ' + (i + 1) + ' de ' + lista.length;
+      cuenta.textContent = t('Foto {i} de {n}', { i: i + 1, n: lista.length });
       todos('button', minis).forEach(function (b, k) { b.setAttribute('aria-current', k === i ? 'true' : 'false'); });
       var activa = minis.children[i];
       if (activa && activa.scrollIntoView && abierto) activa.scrollIntoView({ block: 'nearest', inline: 'nearest' });
@@ -557,7 +574,7 @@
       ul.textContent = '';
       items.forEach(function (x) {
         var li = crear('li');
-        li.appendChild(document.createTextNode(typeof x === 'string' ? x : x.texto));
+        li.appendChild(document.createTextNode(t(textoExtra(x))));
         if (x && x.verificar) {
           var v = crear('span', 'verificar', '[VERIFICAR]'); v.hidden = true; v.title = x.verificar;
           li.appendChild(document.createTextNode(' ')); li.appendChild(v);
@@ -582,16 +599,16 @@
         m2.appendChild(crear('small', null, 'm²'));
         titulo.appendChild(m2);
         /* Se reserva en Octorate: el nombre que hay que reconocer es el de su motor, no el de Booking */
-        $('#dialogo-booking').textContent = apto.nombre_reserva ? 'Al reservar: «' + apto.nombre_reserva + '»' : 'En Booking: «' + apto.nombre_booking + '»';
+        $('#dialogo-booking').textContent = apto.nombre_reserva ? t('Al reservar: «{nombre}»', { nombre: apto.nombre_reserva }) : t('En Booking: «{nombre}»', { nombre: apto.nombre_booking });
         lineas($('#dialogo-camas'), apto.camas);
         lineas($('#dialogo-extras'), apto.extras);
-        $('#dialogo-comunes').textContent = (comunes || []).join(' · ') + '.';
+        $('#dialogo-comunes').textContent = (comunes || []).map(function (c) { return t(c); }).join(' · ') + '.';
         minis.textContent = '';
         lista.forEach(function (id, k) {
           var li = crear('li');
           var b = crear('button');
           b.type = 'button';
-          b.setAttribute('aria-label', 'Foto ' + (k + 1) + ': ' + m[id].alt);
+          b.setAttribute('aria-label', t('Foto {i}: {alt}', { i: k + 1, alt: t(m[id].alt) }));
           b.appendChild(picture(m[id], '64px', 'lazy', ''));
           b.addEventListener('click', function () { i = k; pintar(); });
           li.appendChild(b); minis.appendChild(li);
@@ -724,7 +741,7 @@
     var url = String(CONFIG.reservas || '');
     if (!/^https:\/\//i.test(url)) return null;
     var room = ap && String(ap.octorate_room || '');
-    return /^\d+$/.test(room) ? url + (url.indexOf('?') < 0 ? '?' : '&') + 'room=' + room : url;
+    return conIdioma(/^\d+$/.test(room) ? url + (url.indexOf('?') < 0 ? '?' : '&') + 'room=' + room : url);
   }
 
   /* ═══════════════ los apartamentos, pintados desde data/apartamentos.json ═══════════════ */
@@ -750,7 +767,7 @@
         b.type = 'button';
         b.setAttribute('aria-haspopup', 'dialog');
         b.setAttribute('data-numero', ap.numero);
-        b.setAttribute('aria-label', 'Apartamento número ' + ap.numero + ', ' + ap.m2 + ' metros: ver sus ' + ap.fotos.length + ' fotos y detalles');
+        b.setAttribute('aria-label', t('Apartamento número {n}, {m2} metros: ver sus {fotos} fotos y detalles', { n: ap.numero, m2: ap.m2, fotos: ap.fotos.length }));
         var m = crear('span', 'marco piso__marco');
         m.innerHTML = '<span class="listones" aria-hidden="true"><i class="t"></i><i class="r"></i><i class="b"></i><i class="l"></i></span>';
         var v = crear('span', 'marco__ventana');
@@ -765,9 +782,9 @@
         cab.appendChild(m2);
         b.appendChild(m);
         b.appendChild(cab);
-        b.appendChild(crear('span', 'piso__camas', ap.camas_resumen || ap.camas.join(' · ')));
-        b.appendChild(crear('span', 'piso__extras', ap.extras.slice(0, 3).map(textoExtra).join(' · ')));
-        b.appendChild(crear('span', 'piso__ver', 'Ver fotos y detalles'));
+        b.appendChild(crear('span', 'piso__camas', ap.camas_resumen ? t(ap.camas_resumen) : ap.camas.map(function (c) { return t(c); }).join(' · ')));
+        b.appendChild(crear('span', 'piso__extras', ap.extras.slice(0, 3).map(function (x) { return t(textoExtra(x)); }).join(' · ')));
+        b.appendChild(crear('span', 'piso__ver', t('Ver fotos y detalles')));
         b.addEventListener('click', function () { if (dialogo) dialogo.abrir(ap, b, datos.comunes); });
         li.appendChild(b);
         lista.appendChild(li);
@@ -780,7 +797,7 @@
       var sel = $('#apartamento');
       if (sel) {
         todos('option', sel).forEach(function (o) { if (o.value) o.remove(); });
-        aps.forEach(function (ap) { var o = crear('option', null, 'Nº ' + ap.numero + ' · ' + ap.m2 + ' m² · ' + (ap.camas_resumen || '')); o.value = String(ap.numero); sel.appendChild(o); });
+        aps.forEach(function (ap) { var o = crear('option', null, t('Nº {n}', { n: ap.numero }) + ' · ' + ap.m2 + ' m² · ' + t(ap.camas_resumen || '')); o.value = String(ap.numero); sel.appendChild(o); });
       }
 
       /* «La casa»: el número de apartamentos y los m² salen del JSON, nunca escritos a mano */
@@ -800,15 +817,15 @@
           var th = crear('th'); th.scope = 'row'; th.appendChild(nroHTML(ap.numero)); tr.appendChild(th);
           var td = function (txt, cls) { var c = crear('td', cls, txt); tr.appendChild(c); return c; };
           td(String(ap.m2), 'cifra-tabla');
-          td(ap.dormitorios === 0 ? 'Planta abierta' : String(ap.dormitorios));
-          td(ap.camas.join(' · '));
-          td(ap.terraza ? 'Sí' : 'No');
-          td(ap.balcon ? 'Sí' : 'No');
-          td(ap.lavadora ? 'Sí' : 'No');
+          td(ap.dormitorios === 0 ? t('Planta abierta') : String(ap.dormitorios));
+          td(ap.camas.map(function (x) { return t(x); }).join(' · '));
+          td(ap.terraza ? t('Sí') : t('No'));
+          td(ap.balcon ? t('Sí') : t('No'));
+          td(ap.lavadora ? t('Sí') : t('No'));
           var c = td('');
-          var bt = crear('button', 'boton boton--linea', 'Consultar fechas');
+          var bt = crear('button', 'boton boton--linea', t('Consultar fechas'));
           bt.type = 'button';
-          bt.setAttribute('aria-label', 'Consultar fechas para el apartamento ' + ap.numero);
+          bt.setAttribute('aria-label', t('Consultar fechas para el apartamento {n}', { n: ap.numero }));
           bt.addEventListener('click', function () {
             var url = urlReserva(ap);
             if (url) window.open(url, '_blank', 'noopener'); else elegirApartamento(ap.numero);
@@ -901,8 +918,8 @@
       if (m % 200 === 0) {
         /* las cifras van al suroeste (240º), donde no cae ningún sitio */
         var a = 240 * Math.PI / 180;
-        var t = el('text', { class: 'cifra', x: (C + r * Math.sin(a) - 4).toFixed(1), y: (C - r * Math.cos(a) + 4).toFixed(1), 'text-anchor': 'end' }, gA);
-        t.textContent = m + ' m';
+        var cifraTxt = el('text', { class: 'cifra', x: (C + r * Math.sin(a) - 4).toFixed(1), y: (C - r * Math.cos(a) + 4).toFixed(1), 'text-anchor': 'end' }, gA);
+        cifraTxt.textContent = m + ' m';
       }
     }
     var sitios = [], puntos = {}, filas = {}, modoMovil = null;
@@ -921,9 +938,9 @@
         var sep = modoMovil ? 12 : 10;
         var tx = lado === 'c' ? x : (lado === 'r' ? x + sep : x - sep);
         var ty = y + (lado === 'c' ? 0 : (modoMovil ? 7 : 4.5)) + dy;
-        var t = el('text', { x: tx.toFixed(1), y: ty.toFixed(1), 'text-anchor': lado === 'c' ? 'middle' : (lado === 'r' ? 'start' : 'end') }, g);
-        t.appendChild(document.createTextNode(modoMovil ? (s.corto || s.nombre) : s.nombre));
-        if (!modoMovil) { var ts = el('tspan', { class: 'punto__m', dx: 5 }, t); ts.textContent = etiqueta(s); }
+        var rotulo = el('text', { x: tx.toFixed(1), y: ty.toFixed(1), 'text-anchor': lado === 'c' ? 'middle' : (lado === 'r' ? 'start' : 'end') }, g);
+        rotulo.appendChild(document.createTextNode(t(modoMovil ? (s.corto || s.nombre) : s.nombre)));
+        if (!modoMovil) { var ts = el('tspan', { class: 'punto__m', dx: 5 }, rotulo); ts.textContent = etiqueta(s); }
         g.addEventListener('pointerenter', function () { activar(s.clave, true); });
         g.addEventListener('pointerleave', function () { activar(s.clave, false); });
         puntos[s.clave] = g;
@@ -966,7 +983,7 @@
         onComplete: encenderTodo
       });
     }
-    cargarJSON('data/alrededor.json').then(function (d) {
+    cargarJSON(RAIZ + 'data/alrededor.json').then(function (d) {
       sitios = d.sitios;
       pintarPuntos();
       /* la lista, ordenada por distancia a pie */
@@ -975,8 +992,8 @@
       orden.forEach(function (s) {
         var li = crear('li');
         li.setAttribute('data-clave', s.clave);
-        li.appendChild(crear('span', 'radar-lista__nombre', s.nombre));
-        var m = s.a_pie_m ? s.a_pie_m + ' m · ' + s.minutos + ' min a pie' : s.recta_m + ' m en línea recta';
+        li.appendChild(crear('span', 'radar-lista__nombre', t(s.nombre)));
+        var m = s.a_pie_m ? t('{m} m · {min} min a pie', { m: s.a_pie_m, min: s.minutos }) : t('{m} m en línea recta', { m: s.recta_m });
         li.appendChild(crear('span', 'radar-lista__m', m));
         li.addEventListener('pointerenter', function () { activar(s.clave, true); });
         li.addEventListener('pointerleave', function () { activar(s.clave, false); });
@@ -1003,7 +1020,7 @@
     var carr = $('#carrusel');
     if (!carr) return;
     var pista = $('#carrusel-pista'), citas = todos('.cita', carr), cuenta = $('#carrusel-cuenta'), pausa = $('#carrusel-pausa');
-    var i = 0, auto = !reduce, encima = false, dentro = false, t = null, empezado = false;
+    var i = 0, auto = !reduce, encima = false, dentro = false, temporizador = null, empezado = false;
     function mostrar(k, delUsuario) {
       i = (k + citas.length) % citas.length;
       citas.forEach(function (c, n) { c.classList.toggle('es-activa', n === i); });
@@ -1012,21 +1029,21 @@
       pista.setAttribute('aria-live', auto && !delUsuario ? 'off' : 'polite');
     }
     function parar() {
-      auto = false; clearTimeout(t);
-      pausa.setAttribute('aria-pressed', 'true'); pausa.textContent = 'Reanudar';
+      auto = false; clearTimeout(temporizador);
+      pausa.setAttribute('aria-pressed', 'true'); pausa.textContent = t('Reanudar');
       pista.setAttribute('aria-live', 'polite');
     }
     function programar() {
-      clearTimeout(t);
+      clearTimeout(temporizador);
       if (!auto) return;
-      t = setTimeout(function () { if (!encima && !dentro && !document.hidden) mostrar(i + 1); programar(); }, 6800);
+      temporizador = setTimeout(function () { if (!encima && !dentro && !document.hidden) mostrar(i + 1); programar(); }, 6800);
     }
     $('#carrusel-sig').addEventListener('click', function () { parar(); mostrar(i + 1, true); });
     $('#carrusel-ant').addEventListener('click', function () { parar(); mostrar(i - 1, true); });
     pista.addEventListener('click', function () { parar(); mostrar(i + 1, true); });
     pausa.addEventListener('click', function () {
       if (auto) { parar(); return; }
-      auto = true; pausa.setAttribute('aria-pressed', 'false'); pausa.textContent = 'Pausar';
+      auto = true; pausa.setAttribute('aria-pressed', 'false'); pausa.textContent = t('Pausar');
       pista.setAttribute('aria-live', 'off');
       programar();
     });
@@ -1059,14 +1076,14 @@
     if (!cabecera || !boton || !cabecera.classList.contains('menu-abierto')) return;
     cabecera.classList.remove('menu-abierto');
     boton.setAttribute('aria-expanded', 'false');
-    boton.querySelector('.visualmente-oculto').textContent = 'Abrir menú';
+    boton.querySelector('.visualmente-oculto').textContent = t('Abrir menú');
     if (lenis) lenis.start();
   }
   if (boton) {
     boton.addEventListener('click', function () {
       var abierto = cabecera.classList.toggle('menu-abierto');
       boton.setAttribute('aria-expanded', abierto ? 'true' : 'false');
-      boton.querySelector('.visualmente-oculto').textContent = abierto ? 'Cerrar menú' : 'Abrir menú';
+      boton.querySelector('.visualmente-oculto').textContent = abierto ? t('Cerrar menú') : t('Abrir menú');
       if (lenis) { if (abierto) lenis.stop(); else lenis.start(); }
     });
   }
@@ -1127,9 +1144,9 @@
     if (!btn || !caja) return;
     btn.addEventListener('click', function () {
       var marco = document.createElement('iframe');
-      marco.src = 'https://www.google.com/maps?q=Calle+Virgen+de+la+Soledad+6+Badajoz&output=embed';
+      marco.src = 'https://www.google.com/maps?q=Calle+Virgen+de+la+Soledad+6+Badajoz&output=embed' + (LENGUA === 'pt' ? '&hl=pt-PT' : '');
       marco.loading = 'lazy';
-      marco.title = 'Mapa: El Sótano, C/ Virgen de la Soledad 6, Badajoz';
+      marco.title = t('Mapa: El Sótano, C/ Virgen de la Soledad 6, Badajoz');
       marco.allowFullscreen = true;
       marco.referrerPolicy = 'no-referrer-when-downgrade';
       caja.parentNode.replaceChild(marco, caja);
@@ -1143,10 +1160,9 @@
       var p = CONFIG.segundo_portal;
       if (!p || !p.calle) { caja.hidden = true; return; }
       caja.textContent = '';
-      caja.appendChild(crear('strong', null, 'Dos portales'));
-      var t = crear('p', null, 'Según el apartamento, la entrada es por ' + CONFIG.direccion.calle + ' o por ' + p.calle + '. Te lo decimos al confirmar la reserva.');
-      caja.appendChild(t);
-      var a = crear('a', null, 'Cómo llegar a ' + p.calle);
+      caja.appendChild(crear('strong', null, t('Dos portales')));
+      caja.appendChild(crear('p', null, t('Según el apartamento, la entrada es por {una} o por {otra}. Te lo decimos al confirmar la reserva.', { una: CONFIG.direccion.calle, otra: p.calle })));
+      var a = crear('a', null, t('Cómo llegar a {calle}', { calle: p.calle }));
       a.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.calle + ' ' + (CONFIG.direccion.cp || '') + ' Badajoz');
       a.rel = 'noopener';
       caja.appendChild(a);
@@ -1217,11 +1233,15 @@
       resultado.hidden = false;
       if (resultado.scrollIntoView) resultado.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
     }
-    var DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
-    var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    /* los nombres van en una sola cadena para que t() los traduzca de una vez */
+    var DIAS = t('domingo,lunes,martes,miércoles,jueves,viernes,sábado').split(',');
+    var MESES = t('enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre').split(',');
     function aFecha(v) { var p = v.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
     function iso(d) { return d.getFullYear() + '-' + dos(d.getMonth() + 1) + '-' + dos(d.getDate()); }
-    function largo(d, conAnio) { return DIAS[d.getDay()] + ' ' + d.getDate() + ' de ' + MESES[d.getMonth()] + (conAnio ? ' de ' + d.getFullYear() : ''); }
+    function largo(d, conAnio) {
+      var fecha = t('{dia} {n} de {mes}', { dia: DIAS[d.getDay()], n: d.getDate(), mes: MESES[d.getMonth()] });
+      return conAnio ? t('{fecha} de {anio}', { fecha: fecha, anio: d.getFullYear() }) : fecha;
+    }
     function corto(d) { return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear(); }
     var hoy = new Date(); hoy.setHours(0, 0, 0, 0);
     llegada.min = iso(hoy);
@@ -1229,12 +1249,12 @@
     function comprobarFechas(final) {
       llegada.removeAttribute('aria-invalid'); salida.removeAttribute('aria-invalid');
       if (!llegada.value || !salida.value) {
-        errFechas.textContent = final ? 'Elige la fecha de llegada y la de salida.' : '';
+        errFechas.textContent = final ? t('Elige la fecha de llegada y la de salida.') : '';
         if (final) (llegada.value ? salida : llegada).setAttribute('aria-invalid', 'true');
         return false;
       }
       if (aFecha(salida.value) <= aFecha(llegada.value)) {
-        errFechas.textContent = 'La salida tiene que ser posterior a la llegada.';
+        errFechas.textContent = t('La salida tiene que ser posterior a la llegada.');
         salida.setAttribute('aria-invalid', 'true');
         return false;
       }
@@ -1259,9 +1279,9 @@
     var botonEnviar = form.querySelector('[type="submit"]'), rotuloPreparar = botonEnviar.textContent;
     var enviando = false, enviado = false;
     function rotuloBoton() {
-      if (enviando) return 'Enviando…';
-      if (enviado) return 'Enviado';
-      return CONFIG.web3forms_key ? 'Enviar consulta' : rotuloPreparar;
+      if (enviando) return t('Enviando…');
+      if (enviado) return t('Enviado');
+      return CONFIG.web3forms_key ? t('Enviar consulta') : rotuloPreparar;
     }
     var botonWa = $('#reserva-enviar-wa');
     function pintarBoton() {
@@ -1271,7 +1291,7 @@
       if (botonWa) botonWa.hidden = !CONFIG.whatsapp;
     }
     function pintarNota() {
-      nota.textContent = CONFIG.web3forms_key ? 'Se envía directamente a Apartamentos El Sótano; si no se puede, te dejamos el mensaje para que lo mandes tú.' : notaManual;
+      nota.textContent = CONFIG.web3forms_key ? t('Se envía directamente a Apartamentos El Sótano; si no se puede, te dejamos el mensaje para que lo mandes tú.') : notaManual;
       pintarBoton();
     }
     /* cambiar cualquier dato abre otro mensaje: se puede volver a enviar */
@@ -1290,33 +1310,36 @@
       var okFechas = comprobarFechas(true);
       var nombre = form.elements.nombre.value.trim();
       form.elements.nombre.toggleAttribute('aria-invalid', !nombre);
-      err.textContent = nombre ? '' : 'Falta tu nombre, para que sepamos quién escribe.';
+      err.textContent = nombre ? '' : t('Falta tu nombre, para que sepamos quién escribe.');
       var correo = form.elements.email.value.trim();
       var correoMal = !porWa && !!CONFIG.web3forms_key && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
       form.elements.email.toggleAttribute('aria-invalid', correoMal);
-      if (nombre && correoMal) err.textContent = 'Falta un email válido, para poder contestarte.';
+      if (nombre && correoMal) err.textContent = t('Falta un email válido, para poder contestarte.');
       if (!okFechas || !nombre || correoMal) { listo.hidden = true; return; }
       var a = aFecha(llegada.value), b = aFecha(salida.value);
       var noches = Math.round((b - a) / 864e5);
       var ad = Math.max(1, parseInt(form.elements.adultos.value, 10) || 1);
       var ni = Math.max(0, parseInt(form.elements.ninos.value, 10) || 0);
-      var quienes = ad + (ad === 1 ? ' adulto' : ' adultos') + (ni ? ' y ' + ni + (ni === 1 ? ' niño' : ' niños') : '');
+      var quienes = t(ad === 1 ? '{n} adulto' : '{n} adultos', { n: ad });
+      if (ni) quienes = t('{adultos} y {ninos}', { adultos: quienes, ninos: t(ni === 1 ? '{n} niño' : '{n} niños', { n: ni }) });
       var mascota = form.elements.mascota.value === 'si';
       var apto = form.elements.apartamento.value;
-      var cual = apto ? 'el Nº ' + apto : 'un apartamento';
+      var cual = apto ? t('el Nº {n}', { n: apto }) : t('un apartamento');
       var mismoAnio = a.getFullYear() === b.getFullYear();
       var lineas = [
-        'Hola, somos ' + quienes + (mascota ? ' con mascota' : '') + ' y queremos ' + cual + ' del ' + largo(a, !mismoAnio) + ' al ' + largo(b, true) +
-          ' (' + noches + (noches === 1 ? ' noche' : ' noches') + ').'
+        t('Hola, somos {quienes}{mascota} y queremos {cual} del {desde} al {hasta} ({noches}).', {
+          quienes: quienes, mascota: mascota ? t(' con mascota') : '', cual: cual, desde: largo(a, !mismoAnio), hasta: largo(b, true),
+          noches: t(noches === 1 ? '{n} noche' : '{n} noches', { n: noches })
+        })
       ];
       var msg = form.elements.mensaje.value.trim();
       if (msg) lineas.push('', msg);
-      lineas.push('', '¿Lo tienes libre esas fechas?', '', 'Un saludo,', nombre);
+      lineas.push('', t('¿Lo tienes libre esas fechas?'), '', t('Un saludo,'), nombre);
       var tel = form.elements.telefono.value.trim();
       if (tel) lineas.push('Tel. ' + tel);
       if (correo) lineas.push(correo);
       texto = lineas.join('\n');
-      var asunto = 'Consulta de fechas · ' + (apto ? 'Nº ' + apto + ' · ' : '') + corto(a) + ' – ' + corto(b);
+      var asunto = t('Consulta de fechas') + ' · ' + (apto ? t('Nº {n}', { n: apto }) + ' · ' : '') + corto(a) + ' – ' + corto(b);
       salidaTxt.textContent = texto;
       email.href = mailto(asunto, texto);
       listo.hidden = false;
@@ -1329,13 +1352,13 @@
         return;
       }
       if (CONFIG.web3forms_key) {
-        mostrarResultado('enviando', 'Enviando…', '');
+        mostrarResultado('enviando', t('Enviando…'), '');
         enviando = true; pintarBoton();
         enviarMensaje(nombre, asunto, texto, form.elements.web.value, correo).then(function (ok) {
           if (ok) { try { localStorage.setItem('elsotano-envio', String(Date.now())); } catch (e) {} }
           enviando = false; enviado = ok; pintarBoton();
-          if (ok) mostrarResultado('ok', 'Mensaje enviado', 'Te contestamos en cuanto podamos.');
-          else mostrarResultado('error', 'No se ha podido enviar solo', 'Usa uno de los botones de abajo para mandarlo tú.');
+          if (ok) mostrarResultado('ok', t('Mensaje enviado'), t('Te contestamos en cuanto podamos.'));
+          else mostrarResultado('error', t('No se ha podido enviar solo'), t('Usa uno de los botones de abajo para mandarlo tú.'));
         });
       }
     });
@@ -1343,10 +1366,10 @@
     var botonCopiar = $('#reserva-copiar'), rotuloCopiar = botonCopiar.textContent, vueltaCopiar = 0;
     botonCopiar.addEventListener('click', function () {
       copiar(texto).then(function (ok) {
-        copiadoAnuncio.textContent = ok ? 'Mensaje copiado. Pégalo donde quieras.' : 'No se ha podido copiar: selecciona el texto y cópialo a mano.';
+        copiadoAnuncio.textContent = ok ? t('Mensaje copiado. Pégalo donde quieras.') : t('No se ha podido copiar: selecciona el texto y cópialo a mano.');
         if (!ok) return;
         botonCopiar.style.minWidth = botonCopiar.offsetWidth + 'px';   /* que no encoja y mueva a su vecino */
-        botonCopiar.textContent = 'Copiado';
+        botonCopiar.textContent = t('Copiado');
         clearTimeout(vueltaCopiar);
         vueltaCopiar = setTimeout(function () { botonCopiar.textContent = rotuloCopiar; }, 1600);
       });
@@ -1379,18 +1402,19 @@
   function motorDeReservas() {
     var url = String(CONFIG.reservas || '');
     if (!/^https:\/\//i.test(url)) return;
+    url = conIdioma(url);
     todos('a[href="#fechas"]').forEach(function (a) {
       a.href = url; a.target = '_blank'; a.rel = 'noopener';
-      a.textContent = 'Reservar';
+      a.textContent = t('Reservar');
     });
     var dlgBtn = $('#dialogo-fechas');
-    if (dlgBtn) dlgBtn.textContent = 'Reservar este apartamento';
+    if (dlgBtn) dlgBtn.textContent = t('Reservar este apartamento');
     var ante = $('#fechas .antetitulo'), entrada = $('#fechas .seccion__entrada');
-    if (ante) ante.textContent = 'Consultas';
+    if (ante) ante.textContent = t('Consultas');
     if (entrada && !$('#fechas .fechas__motor')) {
-      entrada.textContent = '¿Prefieres preguntarnos antes de reservar? Rellena esto y te dejamos escrito el mensaje. Lo envías tú, por email o como prefieras, y te contestamos con la disponibilidad y el precio de esas fechas.';
+      entrada.textContent = t('¿Prefieres preguntarnos antes de reservar? Rellena esto y te dejamos escrito el mensaje. Lo envías tú, por email o como prefieras, y te contestamos con la disponibilidad y el precio de esas fechas.');
       var p = crear('p', 'fechas__motor');
-      var a = crear('a', 'boton boton--almagre', 'Reservar online');
+      var a = crear('a', 'boton boton--almagre', t('Reservar online'));
       a.href = url; a.target = '_blank'; a.rel = 'noopener';
       p.appendChild(a);
       entrada.parentNode.insertBefore(p, entrada.nextSibling);
