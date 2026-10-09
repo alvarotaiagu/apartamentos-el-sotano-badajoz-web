@@ -1098,6 +1098,9 @@
     function ver(si) { aro.classList.toggle('es-vivo', si); pt.classList.toggle('es-vivo', si); }
     window.addEventListener('pointermove', function (e) {
       if (e.pointerType && e.pointerType !== 'mouse') return;
+      /* un <dialog> modal vive en la capa superior y tapa todo lo que cuelga del body: el cursor se muda dentro mientras dure */
+      var anfitrion = document.querySelector('dialog[open]') || document.body;
+      if (aro.parentNode !== anfitrion) { anfitrion.appendChild(aro); anfitrion.appendChild(pt); }
       if (!aro.classList.contains('es-vivo')) { gsap.set(aro, { x: e.clientX, y: e.clientY }); ver(true); }
       /* el del sistema se oculta solo cuando el propio ya se ve */
       if (!html.classList.contains('con-cursor')) html.classList.add('con-cursor');
