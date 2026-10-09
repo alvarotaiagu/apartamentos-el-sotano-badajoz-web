@@ -1250,9 +1250,25 @@
     }
     pintarWhatsapp();
     document.addEventListener('config-cargada', pintarWhatsapp);
-    function pintarNota() {
-      nota.textContent = CONFIG.web3forms_key ? 'Al pulsar, lo intentamos enviar nosotros; si no se puede, te dejamos el mensaje para que lo mandes tú.' : notaManual;
+    /* con envío real el botón envía; sin él, solo prepara. Uno por mensaje: mientras sale o ya salió, no se puede repetir */
+    var botonEnviar = form.querySelector('[type="submit"]'), rotuloPreparar = botonEnviar.textContent;
+    var enviando = false, enviado = false;
+    function rotuloBoton() {
+      if (enviando) return 'Enviando…';
+      if (enviado) return 'Enviado';
+      return CONFIG.web3forms_key ? 'Enviar consulta' : rotuloPreparar;
     }
+    function pintarBoton() {
+      botonEnviar.textContent = rotuloBoton();
+      botonEnviar.disabled = enviando || enviado;
+      botonEnviar.classList.toggle('es-apagado', enviando || enviado);
+    }
+    function pintarNota() {
+      nota.textContent = CONFIG.web3forms_key ? 'Se envía directamente a Apartamentos El Sótano; si no se puede, te dejamos el mensaje para que lo mandes tú.' : notaManual;
+      pintarBoton();
+    }
+    /* cambiar cualquier dato abre otro mensaje: se puede volver a enviar */
+    form.addEventListener('input', function () { if (enviado) { enviado = false; pintarBoton(); } });
     pintarNota();
     document.addEventListener('config-cargada', pintarNota);
     wa.addEventListener('click', function () {
@@ -1262,6 +1278,7 @@
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+      if (enviando || enviado) return;
       var okFechas = comprobarFechas(true);
       var nombre = form.elements.nombre.value.trim();
       form.elements.nombre.toggleAttribute('aria-invalid', !nombre);
@@ -1296,7 +1313,9 @@
       if (listo.scrollIntoView) listo.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
       if (CONFIG.web3forms_key) {
         mostrarResultado('enviando', 'Enviando…', '');
+        enviando = true; pintarBoton();
         enviarMensaje(nombre, asunto, texto).then(function (ok) {
+          enviando = false; enviado = ok; pintarBoton();
           if (ok) mostrarResultado('ok', 'Mensaje enviado', 'Te contestamos en cuanto podamos.');
           else mostrarResultado('error', 'No se ha podido enviar solo', 'Usa uno de los botones de abajo para mandarlo tú.');
         });
