@@ -16,6 +16,7 @@
   var API = window.ElSotano || {};
   var gsap = window.gsap;
   var movimiento = !!API.movimiento && !!gsap && !!window.ScrollTrigger;
+  var t = API.t || function (s) { return s; };
 
   /* 1 · la foto antigua, si Manuel la tiene */
   function fotoAntigua(c) {
@@ -25,13 +26,14 @@
     var f = c && c.foto_antigua;
     if (!fig || !f || !f.src) { if (fig) fig.hidden = true; return; }
     var img = document.createElement('img');
-    img.src = f.src; img.alt = f.alt || 'El restaurante El Sótano, en una foto antigua';
+    img.src = (/^(https?:)?\//.test(f.src) ? '' : API.raiz || '') + f.src;
+    img.alt = t(f.alt || 'El restaurante El Sótano, en una foto antigua');
     if (f.ancho) img.width = f.ancho;
     if (f.alto) img.height = f.alto;
     img.loading = 'lazy'; img.decoding = 'async';
     ventana.textContent = '';
     ventana.appendChild(img);
-    pie.textContent = f.pie || '';
+    pie.textContent = f.pie ? t(f.pie) : '';
     fig.hidden = false;
     var marco = fig.querySelector('.marco');
     if (marco && API.prepararListones && API.montarListones && API.alEntrar) {
