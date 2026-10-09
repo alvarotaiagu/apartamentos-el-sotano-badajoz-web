@@ -1263,10 +1263,12 @@
       if (enviado) return 'Enviado';
       return CONFIG.web3forms_key ? 'Enviar consulta' : rotuloPreparar;
     }
+    var botonWa = $('#reserva-enviar-wa');
     function pintarBoton() {
       botonEnviar.textContent = rotuloBoton();
       botonEnviar.disabled = enviando || enviado;
       botonEnviar.classList.toggle('es-apagado', enviando || enviado);
+      if (botonWa) botonWa.hidden = !CONFIG.whatsapp;
     }
     function pintarNota() {
       nota.textContent = CONFIG.web3forms_key ? 'Se envía directamente a Apartamentos El Sótano; si no se puede, te dejamos el mensaje para que lo mandes tú.' : notaManual;
@@ -1283,7 +1285,8 @@
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      if (enviando || enviado) return;
+      var porWa = !!(e.submitter && e.submitter.id === 'reserva-enviar-wa' && CONFIG.whatsapp);
+      if (!porWa && (enviando || enviado)) return;
       var okFechas = comprobarFechas(true);
       var nombre = form.elements.nombre.value.trim();
       form.elements.nombre.toggleAttribute('aria-invalid', !nombre);
@@ -1316,6 +1319,10 @@
       delete listo.dataset.resultado;
       setTimeout(refrescar, 30);
       if (listo.scrollIntoView) listo.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+      if (porWa) {
+        window.open('https://wa.me/' + String(CONFIG.whatsapp).replace(/\D/g, '') + '?text=' + encodeURIComponent(texto), '_blank', 'noopener');
+        return;
+      }
       if (CONFIG.web3forms_key) {
         mostrarResultado('enviando', 'Enviando…', '');
         enviando = true; pintarBoton();
