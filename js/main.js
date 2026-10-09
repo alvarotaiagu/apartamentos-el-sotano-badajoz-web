@@ -1178,12 +1178,17 @@
   }
   /* envío real vía Web3Forms; sin "web3forms_key" en config.json, ni lo intenta (sigue
      siendo "sin backend": el mensaje se queda preparado para email, copiar o llamar) */
-  function enviarMensaje(nombre, asunto, cuerpo) {
+  var cargadaEn = Date.now();
+  var PAUSA_ENVIOS = 60000;   /* un envío por minuto y navegador */
+  function ultimoEnvio() { try { return Number(localStorage.getItem('elsotano-envio')) || 0; } catch (e) { return 0; } }
+  function enviarMensaje(nombre, asunto, cuerpo, cebo) {
     if (!CONFIG.web3forms_key || !window.fetch) return Promise.resolve(false);
+    /* antirrobot: el cebo relleno, un formulario enviado a los 3 s de cargar o un envío hace menos de un minuto no salen */
+    if (cebo || Date.now() - cargadaEn < 3000 || Date.now() - ultimoEnvio() < PAUSA_ENVIOS) return Promise.resolve(false);
     return fetch('https://api.web3forms.com/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ access_key: CONFIG.web3forms_key, subject: asunto, from_name: nombre, message: cuerpo })
+      body: JSON.stringify({ access_key: CONFIG.web3forms_key, subject: asunto, from_name: nombre, message: cuerpo, botcheck: false })
     }).then(function (r) { return r.json(); }).then(function (r) { return !!(r && r.success); }).catch(function () { return false; });
   }
   (function reserva() {
@@ -1314,7 +1319,8 @@
       if (CONFIG.web3forms_key) {
         mostrarResultado('enviando', 'Enviando…', '');
         enviando = true; pintarBoton();
-        enviarMensaje(nombre, asunto, texto).then(function (ok) {
+        enviarMensaje(nombre, asunto, texto, form.elements.web.value).then(function (ok) {
+          if (ok) { try { localStorage.setItem('elsotano-envio', String(Date.now())); } catch (e) {} }
           enviando = false; enviado = ok; pintarBoton();
           if (ok) mostrarResultado('ok', 'Mensaje enviado', 'Te contestamos en cuanto podamos.');
           else mostrarResultado('error', 'No se ha podido enviar solo', 'Usa uno de los botones de abajo para mandarlo tú.');

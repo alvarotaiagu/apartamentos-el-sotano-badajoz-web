@@ -826,3 +826,6 @@ html.con-revision .verificar { display: inline-block; }
 .error404 .placa svg { width: 80%; height: auto; overflow: visible; }
 .error404 h1 { font: 400 clamp(3rem, 9vw, 5.6rem)/1.02 var(--tipo-rotulo); text-transform: uppercase; }
 .error404 p { max-width: 36ch; }
+
+/* cebo para bots: fuera de pantalla, sin display:none (que los bots listos saltan) */
+.trampa { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
