@@ -1181,14 +1181,14 @@
   var cargadaEn = Date.now();
   var PAUSA_ENVIOS = 60000;   /* un envío por minuto y navegador */
   function ultimoEnvio() { try { return Number(localStorage.getItem('elsotano-envio')) || 0; } catch (e) { return 0; } }
-  function enviarMensaje(nombre, asunto, cuerpo, cebo) {
+  function enviarMensaje(nombre, asunto, cuerpo, cebo, correo) {
     if (!CONFIG.web3forms_key || !window.fetch) return Promise.resolve(false);
     /* antirrobot: el cebo relleno, un formulario enviado a los 3 s de cargar o un envío hace menos de un minuto no salen */
     if (cebo || Date.now() - cargadaEn < 3000 || Date.now() - ultimoEnvio() < PAUSA_ENVIOS) return Promise.resolve(false);
     return fetch('https://api.web3forms.com/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ access_key: CONFIG.web3forms_key, subject: asunto, from_name: nombre, message: cuerpo, botcheck: false })
+      body: JSON.stringify({ access_key: CONFIG.web3forms_key, subject: asunto, from_name: nombre, email: correo, message: cuerpo, botcheck: false })
     }).then(function (r) { return r.json(); }).then(function (r) { return !!(r && r.success); }).catch(function () { return false; });
   }
   (function reserva() {
@@ -1291,7 +1291,11 @@
       var nombre = form.elements.nombre.value.trim();
       form.elements.nombre.toggleAttribute('aria-invalid', !nombre);
       err.textContent = nombre ? '' : 'Falta tu nombre, para que sepamos quién escribe.';
-      if (!okFechas || !nombre) { listo.hidden = true; return; }
+      var correo = form.elements.email.value.trim();
+      var correoMal = !porWa && !!CONFIG.web3forms_key && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
+      form.elements.email.toggleAttribute('aria-invalid', correoMal);
+      if (nombre && correoMal) err.textContent = 'Falta un email válido, para poder contestarte.';
+      if (!okFechas || !nombre || correoMal) { listo.hidden = true; return; }
       var a = aFecha(llegada.value), b = aFecha(salida.value);
       var noches = Math.round((b - a) / 864e5);
       var ad = Math.max(1, parseInt(form.elements.adultos.value, 10) || 1);
@@ -1310,6 +1314,7 @@
       lineas.push('', '¿Lo tienes libre esas fechas?', '', 'Un saludo,', nombre);
       var tel = form.elements.telefono.value.trim();
       if (tel) lineas.push('Tel. ' + tel);
+      if (correo) lineas.push(correo);
       texto = lineas.join('\n');
       var asunto = 'Consulta de fechas · ' + (apto ? 'Nº ' + apto + ' · ' : '') + corto(a) + ' – ' + corto(b);
       salidaTxt.textContent = texto;
@@ -1326,7 +1331,7 @@
       if (CONFIG.web3forms_key) {
         mostrarResultado('enviando', 'Enviando…', '');
         enviando = true; pintarBoton();
-        enviarMensaje(nombre, asunto, texto, form.elements.web.value).then(function (ok) {
+        enviarMensaje(nombre, asunto, texto, form.elements.web.value, correo).then(function (ok) {
           if (ok) { try { localStorage.setItem('elsotano-envio', String(Date.now())); } catch (e) {} }
           enviando = false; enviado = ok; pintarBoton();
           if (ok) mostrarResultado('ok', 'Mensaje enviado', 'Te contestamos en cuanto podamos.');
