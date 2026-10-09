@@ -829,3 +829,4 @@ html.con-revision .verificar { display: inline-block; }
 
 /* cebo para bots: fuera de pantalla, sin display:none (que los bots listos saltan) */
 .trampa { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.boton[hidden] { display: none; }
