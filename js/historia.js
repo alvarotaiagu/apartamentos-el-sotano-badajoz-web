@@ -18,7 +18,7 @@
   var movimiento = !!API.movimiento && !!gsap && !!window.ScrollTrigger;
   var t = API.t || function (s) { return s; };
 
-  /* 1 · la foto antigua, si Manuel la tiene */
+  /* 1 · la foto antigua, si la hay */
   function fotoAntigua(c) {
     var fig = document.getElementById('historia-antigua');
     var ventana = document.getElementById('historia-antigua-ventana');
