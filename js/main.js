@@ -1171,7 +1171,7 @@
     document.addEventListener('config-cargada', pintar);
   })();
 
-  /* ───────────────── consultar fechas: mensaje para Manuel ───────────────── */
+  /* ───────────────── consultar fechas: mensaje para el propietario ───────────────── */
   /* mailto según RFC 6068: saltos de línea como CRLF y todo codificado */
   function mailto(asunto, cuerpo) {
     return 'mailto:' + CONFIG.email + '?subject=' + encodeURIComponent(asunto) + '&body=' + encodeURIComponent(cuerpo.replace(/\r?\n/g, '\r\n'));
