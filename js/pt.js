@@ -6,6 +6,7 @@ window.ElSotanoPT = {
  "Consultar fechas": "Consultar datas",
  "657 77 11 35": "+34 657 77 11 35",
  "La puerta de la vidriera": "A porta do vitral",
+ "Fachada de Apartamentos El Sótano en la calle Virgen de la Soledad: el portal del número 6 y el rótulo de madera": "Fachada dos Apartamentos El Sótano na calle Virgen de la Soledad: o portal do número 6 e o letreiro de madeira",
  "Balcón": "Varanda",
  "Lavadora": "Máquina de lavar roupa",
  "Wifi": "Wi-Fi",
