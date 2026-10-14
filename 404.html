@@ -12,7 +12,9 @@
    se rehacen desde la raíz del sitio. En github.io la raíz es /<repo>/; en local, /. */
 function aLaRaiz() {
   var m = location.pathname.match(/^\/[^/]+\//);
-  var raiz = /\.github\.io$/.test(location.hostname) && m ? m[0] : '/';
+  /* hosting con la web en una subcarpeta: borrar enCarpeta al pasar a la raíz del dominio */
+  var enCarpeta = /^\/ApartamentosElSotano\//i.test(location.pathname);
+  var raiz = (/\.github\.io$/.test(location.hostname) || enCarpeta) && m ? m[0] : '/';
   [].forEach.call(document.querySelectorAll('[data-raiz]'), function (n) {
     n.setAttribute('href', raiz + n.getAttribute('href').replace(/^\.?\//, ''));
     n.removeAttribute('data-raiz');
