@@ -2,6 +2,17 @@
  "fuente": "Fotos subidas por el propio alojamiento a su ficha de Booking (feb.-abr. 2025) y, la fachada, a su motor de Octorate (original de 3200 px), graduadas con scripts/gradar.py. Sin recortes ni retoques de contenido.",
  "fotos": [
   {
+   "id": "500057196",
+   "grupo": "casa",
+   "alt": "Fachada de Apartamentos El Sótano en la calle Virgen de la Soledad: el portal del número 6 y el rótulo de madera",
+   "w": 1080,
+   "h": 1350,
+   "anchos": [
+    480,
+    960
+   ]
+  },
+  {
    "id": "650532149",
    "grupo": "1",
    "alt": "Comedor del Nº 1: mesa gris con sillas de madera y la pared panelada de madera",
