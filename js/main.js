@@ -793,7 +793,7 @@
       sinjs.hidden = true;
       vigilarListones(marcos);
 
-      /* el formulario: un apartamento por entrada, más «Me da igual» */
+      /* el formulario: un apartamento por entrada, más «Elige un apartamento» */
       var sel = $('#apartamento');
       if (sel) {
         todos('option', sel).forEach(function (o) { if (o.value) o.remove(); });
@@ -1164,7 +1164,7 @@
       caja.appendChild(crear('p', null, t('Según el apartamento, la entrada es por {una} o por {otra}. Te lo decimos al confirmar la reserva.', { una: CONFIG.direccion.calle, otra: p.calle })));
       var a = crear('a', null, t('Cómo llegar a {calle}', { calle: p.calle }));
       a.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.calle + ' ' + (CONFIG.direccion.cp || '') + ' Badajoz');
-      a.rel = 'noopener';
+      a.target = '_blank'; a.rel = 'noopener';
       caja.appendChild(a);
       caja.hidden = false;
     }
@@ -1310,12 +1310,14 @@
       var okFechas = comprobarFechas(true);
       var nombre = form.elements.nombre.value.trim();
       form.elements.nombre.toggleAttribute('aria-invalid', !nombre);
-      err.textContent = nombre ? '' : t('Falta tu nombre, para que sepamos quién escribe.');
+      var aptoMal = !form.elements.apartamento.value;
+      form.elements.apartamento.toggleAttribute('aria-invalid', aptoMal);
+      err.textContent = aptoMal ? t('Elige el apartamento que quieres consultar.') : nombre ? '' : t('Falta tu nombre, para que sepamos quién escribe.');
       var correo = form.elements.email.value.trim();
       var correoMal = !porWa && !!CONFIG.web3forms_key && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
       form.elements.email.toggleAttribute('aria-invalid', correoMal);
-      if (nombre && correoMal) err.textContent = t('Falta un email válido, para poder contestarte.');
-      if (!okFechas || !nombre || correoMal) { listo.hidden = true; return; }
+      if (!aptoMal && nombre && correoMal) err.textContent = t('Falta un email válido, para poder contestarte.');
+      if (!okFechas || aptoMal || !nombre || correoMal) { listo.hidden = true; return; }
       var a = aFecha(llegada.value), b = aFecha(salida.value);
       var noches = Math.round((b - a) / 864e5);
       var ad = Math.max(1, parseInt(form.elements.adultos.value, 10) || 1);

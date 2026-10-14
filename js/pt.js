@@ -20,6 +20,7 @@ window.ElSotanoPT = {
  "{m} m · {min} min a pie": "{m} m · {min} min a pé",
  "{m} m en línea recta": "{m} m em linha reta",
  "Reanudar": "Retomar",
+ "Elige el apartamento que quieres consultar.": "Escolha o apartamento que pretende consultar.",
  "No": "Não",
  "Sí": "Sim",
  "Al reservar: «{nombre}»": "Ao reservar: «{nombre}»",

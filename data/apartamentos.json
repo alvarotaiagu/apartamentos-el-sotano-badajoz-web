@@ -64,10 +64,7 @@
     "Planta abierta",
     "Celosía de listones",
     "Entrada propia",
-    {
-     "texto": "La barra del antiguo restaurante",
-     "verificar": "Confirmar con Manuel qué mueble es la barra (está en el apartamento 2) y pedirle una foto"
-    },
+    "La barra del antiguo restaurante",
     "Entrada por C/ Virgen de la Soledad, 6"
    ],
    "terraza": false,
