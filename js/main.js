@@ -34,7 +34,7 @@
   /* lo mismo que data/config.json, por si el JSON no llega */
   var CONFIG = {
     telefono: '657 77 11 35', telefono_enlace: '+34657771135',
-    email: 'apartamentoselsotano@gmail.com', whatsapp: null, reservas: null,
+    email: 'reservas@apartamentoselsotano.es', whatsapp: null, reservas: null,
     booking: 'https://www.booking.com/hotel/es/apartamentos-el-sotano.es.html',
     segundo_portal: null, foto_antigua: null
   };
